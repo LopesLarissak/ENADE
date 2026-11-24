@@ -1,0 +1,4 @@
+enade_api_role:
+  - "api/api"
+enade_worker_role:
+  - "worker/worker"

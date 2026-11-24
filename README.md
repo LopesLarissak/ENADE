@@ -1,6 +1,6 @@
 # Plataforma Distribuída de Busca e Indexação do Acervo ENADE
 
-Projeto acadêmico em laboratório com Python/FastAPI, Apache Kafka (KRaft), Elasticsearch, Redis, OpenLDAP e React/Vite.
+Projeto acadêmico em laboratório com Python/FastAPI, Apache Kafka (KRaft + SASL/GSSAPI Kerberos), MIT Kerberos KDC, Elasticsearch, Redis, OpenLDAP e React/Vite.
 
 ## 1. Requisitos locais
 - Docker Desktop ou Docker Engine + Compose v2.
@@ -13,6 +13,10 @@ Projeto acadêmico em laboratório com Python/FastAPI, Apache Kafka (KRaft), Ela
 cp .env.example .env
 # Gere um segredo forte e cole no campo API_SECRET do .env:
 openssl rand -hex 32
+# Gere também a senha mestra do KDC (outro segredo forte) e substitua KRB5_KDC_MASTER_PASSWORD no .env
+openssl rand -hex 32
+# Gere também uma senha forte para REDIS_PASSWORD e atualize o .env.
+openssl rand -hex 32
 # Suba o ambiente
 docker compose up -d --build
 # Acompanhe os serviços
@@ -20,11 +24,12 @@ docker compose ps
 docker compose logs -f api worker
 ```
 
-Aguarde o OpenLDAP concluir o bootstrap LDIF. Endereços:
+Aguarde o KDC Kerberos gerar os principals/keytabs e o OpenLDAP concluir o bootstrap LDIF. Endereços:
 - Frontend: http://localhost:5173
 - API/Swagger: http://localhost:8000/docs
 - Health: http://localhost:8000/health
 - Elasticsearch: http://localhost:9200
+- Kerberos realm: `ENADE.LOCAL` (KDC interno `kerberos:88`)
 
 **Contas exclusivamente para laboratório:** `estudante` / `Estudante@123` e `professor` / `Professor@123`. Troque as senhas e hashes LDAP antes de compartilhar o ambiente. O listener LDAP e Elasticsearch deste Compose são internos de laboratório, sem TLS/autenticação de transporte; não use em produção.
 
@@ -112,7 +117,11 @@ Amostra manual: preencher `evaluation/quality_sample_template.csv` com no mínim
 ## 7. Topologia e limites declarados
 Laboratório: 1 broker Kafka, 3 partições no tópico principal, 1 partição DLQ, Elasticsearch single-node/1 shard/0 réplicas, Redis standalone. Isso permite execução local e demonstra o pipeline, mas não oferece alta disponibilidade. Para produção, adotar múltiplos brokers, replicação, TLS, autenticação, backups, observabilidade e política de recuperação.
 
-**Kerberos:** este pacote não declara RF22 concluído. A autenticação mútua Kafka–Elasticsearch–API via Kerberos exige KDC/realm, principals, keytabs, JAAS/SASL-GSSAPI no Kafka e uma configuração de segurança Elasticsearch compatível com o licenciamento/recursos da distribuição escolhida. Não simule esse requisito com um container KDC isolado. Antes da submissão, executar e registrar essa integração no ambiente-alvo ou declarar formalmente a limitação ao docente.
+**Kerberos (SASL/GSSAPI):** o Compose sobe um MIT KDC no realm `ENADE.LOCAL`, cria os principals `kafka/kafka`, `api/api` e `worker/worker` e gera keytabs em um volume Docker privado. O broker Kafka aceita somente `SASL_PLAINTEXT` com mecanismo `GSSAPI`; API e worker obtêm tickets com `kinit` no entrypoint e usam esses tickets nos clientes Kafka. O produtor e o consumidor compartilham a configuração em `app/kafka_security.py`; a API também usa GSSAPI no healthcheck do Kafka. LDAP continua autenticando as pessoas no login e definindo os grupos/perfis; Kerberos autentica os processos/serviços, não substitui o RBAC da aplicação.
+
+**Limites de segurança:** `SASL_PLAINTEXT` protege a autenticação, mas não cifra o tráfego Kafka; para produção, use `SASL_SSL` com certificados e rotação de keytabs. Elasticsearch 8.x com `xpack.security.enabled=false` continua sem autenticação Kerberos neste Compose. O realm Kerberos nativo do Elasticsearch depende de recursos/licenciamento específicos da Elastic; portanto, não declare a comunicação API/worker–Elasticsearch como Kerberos protegida. Redis e LDAP também permanecem sem Kerberos neste laboratório. A senha mestra do KDC em `.env` é somente para bootstrap local e nunca deve ser versionada.
+
+**Inicialização limpa:** a primeira subida cria o banco do KDC e os keytabs. Não remova o volume `kerberos_db` nem regenere os keytabs isoladamente: eles precisam corresponder às chaves armazenadas no banco do KDC. Para reiniciar mantendo identidades, use `docker compose down` (sem `-v`) e depois `docker compose up -d --build`.
 
 **Mídia:** o extrator registra imagens e páginas de origem e aplica OCR em páginas sem texto; elementos gráficos são sinalizados para revisão. A conversão semântica de diagramas para Mermaid e fórmulas de imagem para LaTeX ainda exige componente multimodal e validação humana. O campo `structured_media` identifica candidatos, não garante conversão correta.
 
@@ -121,3 +130,6 @@ Laboratório: 1 broker Kafka, 3 partições no tópico principal, 1 partição D
 - `.env.example` contém apenas valores de laboratório.
 - `.dockerignore` exclui `.env`, keytabs e PDFs privados do contexto da imagem.
 - Alterar as senhas de laboratório antes de disponibilizar o serviço.
+
+
+**Kerberos (RF22):** o pacote configura KDC/realm, principals e keytabs; Kafka exige SASL/GSSAPI; API e worker usam tickets próprios; Elasticsearch usa realm Kerberos/SPNEGO em HTTPS, com principal HTTP e mapeamento de permissões por serviço. A validação integrada no Codespace ainda é obrigatória. Redis Open Source não oferece Kerberos nativo e, neste Compose, exige senha e fica restrito à rede Docker; para produção, habilite ACL/TLS; OpenLDAP continua como diretório de usuários e requer configuração SASL/GSSAPI própria para aceitar binds Kerberos. Consulte `reports/KERBEROS.md` e não declare componentes como Kerberos-protegidos sem validar a configuração correspondente.
