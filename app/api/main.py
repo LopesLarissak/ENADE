@@ -10,11 +10,12 @@ import jwt
 from fastapi import FastAPI, HTTPException, Query, Header, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from elasticsearch import Elasticsearch, NotFoundError
+from app.kerberos_elasticsearch import KerberosElasticsearch, ElasticsearchHTTPError
 from redis import Redis
 from confluent_kafka.admin import AdminClient
 from ldap3 import Server, Connection
-from app.config import KAFKA, LDAP_HOST, LDAP_USER_DN, LDAP_PASSWORD
+from app.config import LDAP_HOST, LDAP_USER_DN, LDAP_PASSWORD
+from app.kafka_security import kafka_client_config
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
@@ -29,7 +30,7 @@ app = FastAPI(title="ENADE Distribuído API", version="2.0.0",
 app.add_middleware(CORSMiddleware, allow_origins=API_ALLOWED_ORIGINS,
                    allow_credentials=True, allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
                    allow_headers=["Authorization", "Content-Type"])
-es = Elasticsearch(ELASTIC_URL, request_timeout=10)
+es = KerberosElasticsearch(ELASTIC_URL, request_timeout=10)
 redis = Redis.from_url(REDIS_URL, decode_responses=True)
 INDEX = "enade-questions"
 
@@ -92,7 +93,7 @@ def health():
     probes = {
         "elasticsearch": es.ping,
         "redis": redis.ping,
-        "kafka": lambda: AdminClient({"bootstrap.servers": KAFKA}).list_topics(timeout=3),
+        "kafka": lambda: AdminClient(kafka_client_config()).list_topics(timeout=3),
         "ldap": lambda: _ldap_health(),
     }
     for name, fn in probes.items():
@@ -171,7 +172,10 @@ def search_questions(q: str = "", area: str | None = None, course: str | None = 
 def get_question(question_id: str, authorization: Optional[str] = Header(None)):
     user = user_from_header(authorization)
     try: doc = dict(es.get(index=INDEX, id=question_id)["_source"])
-    except NotFoundError: raise HTTPException(404, "Questão não encontrada")
+    except ElasticsearchHTTPError as exc:
+        if exc.status_code == 404:
+            raise HTTPException(404, "Questão não encontrada")
+        raise HTTPException(503, "Índice indisponível") from exc
     except Exception as exc: raise HTTPException(503, "Índice indisponível") from exc
     if user["role"] != "PROFESSOR": doc.pop("answer_key", None)
     return doc

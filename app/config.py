@@ -1,7 +1,7 @@
 import os
 
 KAFKA = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "kafka:9092")
-REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
+REDIS_URL = os.getenv("REDIS_URL", "redis://default:replace_with_a_long_random_redis_password@redis:6379/0")
 ELASTIC_URL = os.getenv("ELASTIC_URL", "http://elasticsearch:9200")
 LDAP_HOST = os.getenv("LDAP_HOST", "ldap://openldap:389")
 LDAP_BASE_DN = os.getenv("LDAP_BASE_DN", "dc=example,dc=org")

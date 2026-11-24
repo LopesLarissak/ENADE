@@ -5,10 +5,12 @@ import os
 import time
 
 from confluent_kafka import Consumer, Producer
-from elasticsearch import Elasticsearch
+from app.kerberos_elasticsearch import KerberosElasticsearch
 from redis import Redis
 
-from app.config import KAFKA, ELASTIC_URL, REDIS_URL
+from app.config import ELASTIC_URL, REDIS_URL
+from app.kafka_security import kafka_client_config
+from app.kafka_admin import ensure_topics
 
 logging.basicConfig(
     level=logging.INFO,
@@ -20,7 +22,7 @@ DLQ_TOPIC = "enade.questions.dlq"
 MAIN_TOPIC = "enade.questions"
 MAX_RETRIES = 3
 
-es = Elasticsearch(ELASTIC_URL)
+es = KerberosElasticsearch(ELASTIC_URL)
 redis_client = Redis.from_url(REDIS_URL, decode_responses=True)
 
 
@@ -139,27 +141,30 @@ def process_message(msg):
 
 
 def main():
+    ensure_topics()
     ensure_index()
 
-    consumer = Consumer({
-        "bootstrap.servers": KAFKA,
+    consumer_config = kafka_client_config()
+    consumer_config.update({
         "group.id": "enade-elastic-indexer-v1",
         "auto.offset.reset": "earliest",
         "enable.auto.commit": False
     })
+    consumer = Consumer(consumer_config)
 
-    producer = Producer({
-        "bootstrap.servers": KAFKA,
+    producer_config = kafka_client_config()
+    producer_config.update({
         "enable.idempotence": True,
         "acks": "all",
         "retries": 10
     })
+    producer = Producer(producer_config)
 
     consumer.subscribe([MAIN_TOPIC])
 
     logging.info(
         "Worker iniciado. Kafka: %s | Tópico: %s",
-        KAFKA,
+        consumer_config["bootstrap.servers"],
         MAIN_TOPIC
     )
 

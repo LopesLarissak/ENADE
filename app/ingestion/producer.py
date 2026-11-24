@@ -1,7 +1,8 @@
 
 import logging
 from confluent_kafka import Producer
-from app.config import KAFKA
+from app.kafka_security import kafka_client_config
+from app.kafka_admin import ensure_topics
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -10,13 +11,15 @@ TOPIC = "enade.questions"
 
 
 def publish_questions(questions):
-    producer = Producer({
-        "bootstrap.servers": KAFKA,
+    ensure_topics()
+    producer_config = kafka_client_config()
+    producer_config.update({
         "enable.idempotence": True,
         "acks": "all",
         "retries": 10,
         "max.in.flight.requests.per.connection": 5
     })
+    producer = Producer(producer_config)
 
     delivered = []
     failed = []
