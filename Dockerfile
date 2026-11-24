@@ -4,5 +4,4 @@ ENV PYTHONPATH=/app PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 COPY requirements.txt .
 RUN apt-get update && apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-por tesseract-ocr-eng && rm -rf /var/lib/apt/lists/*
 RUN pip install --no-cache-dir -r requirements.txt
-# Código montado em desenvolvimento pelo Compose; em build standalone, copie apenas fontes.
 COPY app ./app
