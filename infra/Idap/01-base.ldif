@@ -1,0 +1,37 @@
+dn: ou=people,dc=example,dc=org
+objectClass: organizationalUnit
+ou: people
+
+dn: ou=groups,dc=example,dc=org
+objectClass: organizationalUnit
+ou: groups
+
+dn: cn=estudantes,ou=groups,dc=example,dc=org
+objectClass: groupOfNames
+cn: estudantes
+member: uid=estudante,ou=people,dc=example,dc=org
+
+dn: cn=professores,ou=groups,dc=example,dc=org
+objectClass: groupOfNames
+cn: professores
+member: uid=professor,ou=people,dc=example,dc=org
+
+dn: uid=estudante,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Estudante de Teste
+sn: Teste
+uid: estudante
+userPassword: {SSHA}rFl57pHu3HluWV5GQMARcRcQNU5zSq8I
+
+dn: uid=professor,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Professor de Teste
+sn: Teste
+uid: professor
+userPassword: {SSHA}pnPpOXCDfDeHlDqw5bHbYgBpPX5t5jG4
