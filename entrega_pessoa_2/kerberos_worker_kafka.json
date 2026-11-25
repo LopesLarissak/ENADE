@@ -1,0 +1,12 @@
+{
+  "principal_esperado": "worker/worker@ENADE.LOCAL",
+  "modo": "worker",
+  "coleta_utc": "2026-11-25T21:19:51.205132+00:00",
+  "etapa": "kafka",
+  "kafka_gssapi": {
+    "brokers": 1,
+    "topics": []
+  },
+  "klist": "Ticket cache: FILE:/tmp/krb5cc_worker\nDefault principal: worker/worker@ENADE.LOCAL\n\nValid starting     Expires            Service principal\n11/25/26 21:19:51  11/26/26 07:19:51  krbtgt/ENADE.LOCAL@ENADE.LOCAL\n\trenew until 12/02/26 21:19:51\n11/25/26 21:19:51  11/26/26 07:19:51  kafka/kafka@\n\trenew until 12/02/26 21:19:51\n\tTicket server: kafka/kafka@ENADE.LOCAL\n",
+  "resultado": "APROVADO"
+}

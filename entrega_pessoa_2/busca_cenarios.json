@@ -1,0 +1,1049 @@
+{
+  "filtros": {
+    "parametros": {
+      "q": "tecnologia",
+      "area": "Computação",
+      "course": "Sistemas de Informação",
+      "year": 2021,
+      "exam_type": "CE",
+      "question_type": "objetiva",
+      "competency": "Ética",
+      "annulled": "false"
+    },
+    "resposta": {
+      "total": 3,
+      "page": 1,
+      "size": 10,
+      "items": [
+        {
+          "id": "lab-pessoa2-01",
+          "score": 0.080004744,
+          "question": {
+            "id": "lab-pessoa2-01",
+            "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+            "source_page": 1,
+            "source_pages": [],
+            "question_number": null,
+            "area": "Computação",
+            "course": "Sistemas de Informação",
+            "year": 2021,
+            "exam_type": "CE",
+            "question_type": "objetiva",
+            "statement": "Questão sintética 1: como a tecnologia contribui para ética e sustentabilidade?",
+            "alternatives": [
+              "A) Avaliar impactos sociais.",
+              "B) Ignorar os impactos."
+            ],
+            "annulled": false,
+            "knowledge_objects": [
+              "Tecnologia",
+              "Sustentabilidade"
+            ],
+            "competencies": [
+              "Ética"
+            ],
+            "media_review_required": false,
+            "media_references": [],
+            "structured_media": [],
+            "extraction_method": "pymupdf_text",
+            "extraction_status": "synthetic_fixture"
+          },
+          "highlight": {
+            "statement": [
+              "Questão sintética 1: como a <mark>tecnologia</mark> contribui para ética e sustentabilidade?"
+            ]
+          }
+        },
+        {
+          "id": "lab-pessoa2-07",
+          "score": 0.080004744,
+          "question": {
+            "id": "lab-pessoa2-07",
+            "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+            "source_page": 7,
+            "source_pages": [],
+            "question_number": null,
+            "area": "Computação",
+            "course": "Sistemas de Informação",
+            "year": 2021,
+            "exam_type": "CE",
+            "question_type": "objetiva",
+            "statement": "Questão sintética 7: como a tecnologia contribui para ética e sustentabilidade?",
+            "alternatives": [
+              "A) Avaliar impactos sociais.",
+              "B) Ignorar os impactos."
+            ],
+            "annulled": false,
+            "knowledge_objects": [
+              "Tecnologia",
+              "Sustentabilidade"
+            ],
+            "competencies": [
+              "Ética"
+            ],
+            "media_review_required": false,
+            "media_references": [],
+            "structured_media": [],
+            "extraction_method": "pymupdf_text",
+            "extraction_status": "synthetic_fixture"
+          },
+          "highlight": {
+            "statement": [
+              "Questão sintética 7: como a <mark>tecnologia</mark> contribui para ética e sustentabilidade?"
+            ]
+          }
+        },
+        {
+          "id": "lab-pessoa2-13",
+          "score": 0.080004744,
+          "question": {
+            "id": "lab-pessoa2-13",
+            "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+            "source_page": 13,
+            "source_pages": [],
+            "question_number": null,
+            "area": "Computação",
+            "course": "Sistemas de Informação",
+            "year": 2021,
+            "exam_type": "CE",
+            "question_type": "objetiva",
+            "statement": "Questão sintética 13: como a tecnologia contribui para ética e sustentabilidade?",
+            "alternatives": [
+              "A) Avaliar impactos sociais.",
+              "B) Ignorar os impactos."
+            ],
+            "annulled": false,
+            "knowledge_objects": [
+              "Tecnologia",
+              "Sustentabilidade"
+            ],
+            "competencies": [
+              "Ética"
+            ],
+            "media_review_required": false,
+            "media_references": [],
+            "structured_media": [],
+            "extraction_method": "pymupdf_text",
+            "extraction_status": "synthetic_fixture"
+          },
+          "highlight": {
+            "statement": [
+              "Questão sintética 13: como a <mark>tecnologia</mark> contribui para ética e sustentabilidade?"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "pagina2": {
+    "total": 18,
+    "page": 2,
+    "size": 5,
+    "items": [
+      {
+        "id": "lab-pessoa2-06",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-06",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 6,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Engenharias",
+          "course": "Engenharia Ambiental",
+          "year": 2022,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 6: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 6: como a <mark>tecnologia</mark> contribui para ética e sustentabilidade?"
+          ]
+        }
+      },
+      {
+        "id": "lab-pessoa2-09",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-09",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 9,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Engenharias",
+          "course": "Engenharia Ambiental",
+          "year": 2021,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 9: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 9: como a <mark>tecnologia</mark> contribui para ética e sustentabilidade?"
+          ]
+        }
+      },
+      {
+        "id": "lab-pessoa2-02",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-02",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 2,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Saúde",
+          "course": "Enfermagem",
+          "year": 2022,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 2: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 2: como a <mark>tecnologia</mark> contribui para ética e sustentabilidade?"
+          ]
+        }
+      },
+      {
+        "id": "lab-pessoa2-05",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-05",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 5,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Saúde",
+          "course": "Enfermagem",
+          "year": 2021,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 5: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 5: como a <mark>tecnologia</mark> contribui para ética e sustentabilidade?"
+          ]
+        }
+      },
+      {
+        "id": "lab-pessoa2-08",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-08",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 8,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Saúde",
+          "course": "Enfermagem",
+          "year": 2022,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 8: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 8: como a <mark>tecnologia</mark> contribui para ética e sustentabilidade?"
+          ]
+        }
+      }
+    ]
+  },
+  "interdisciplinar": {
+    "total": 18,
+    "page": 1,
+    "size": 100,
+    "items": [
+      {
+        "id": "lab-pessoa2-01",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-01",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 1,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Computação",
+          "course": "Sistemas de Informação",
+          "year": 2021,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 1: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 1: como a tecnologia contribui para ética e <mark>sustentabilidade</mark>?"
+          ]
+        }
+      },
+      {
+        "id": "lab-pessoa2-04",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-04",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 4,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Computação",
+          "course": "Sistemas de Informação",
+          "year": 2022,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 4: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 4: como a tecnologia contribui para ética e <mark>sustentabilidade</mark>?"
+          ]
+        }
+      },
+      {
+        "id": "lab-pessoa2-07",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-07",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 7,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Computação",
+          "course": "Sistemas de Informação",
+          "year": 2021,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 7: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 7: como a tecnologia contribui para ética e <mark>sustentabilidade</mark>?"
+          ]
+        }
+      },
+      {
+        "id": "lab-pessoa2-10",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-10",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 10,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Computação",
+          "course": "Sistemas de Informação",
+          "year": 2022,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 10: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 10: como a tecnologia contribui para ética e <mark>sustentabilidade</mark>?"
+          ]
+        }
+      },
+      {
+        "id": "lab-pessoa2-03",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-03",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 3,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Engenharias",
+          "course": "Engenharia Ambiental",
+          "year": 2021,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 3: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 3: como a tecnologia contribui para ética e <mark>sustentabilidade</mark>?"
+          ]
+        }
+      },
+      {
+        "id": "lab-pessoa2-06",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-06",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 6,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Engenharias",
+          "course": "Engenharia Ambiental",
+          "year": 2022,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 6: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 6: como a tecnologia contribui para ética e <mark>sustentabilidade</mark>?"
+          ]
+        }
+      },
+      {
+        "id": "lab-pessoa2-09",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-09",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 9,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Engenharias",
+          "course": "Engenharia Ambiental",
+          "year": 2021,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 9: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 9: como a tecnologia contribui para ética e <mark>sustentabilidade</mark>?"
+          ]
+        }
+      },
+      {
+        "id": "lab-pessoa2-02",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-02",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 2,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Saúde",
+          "course": "Enfermagem",
+          "year": 2022,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 2: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 2: como a tecnologia contribui para ética e <mark>sustentabilidade</mark>?"
+          ]
+        }
+      },
+      {
+        "id": "lab-pessoa2-05",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-05",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 5,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Saúde",
+          "course": "Enfermagem",
+          "year": 2021,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 5: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 5: como a tecnologia contribui para ética e <mark>sustentabilidade</mark>?"
+          ]
+        }
+      },
+      {
+        "id": "lab-pessoa2-08",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-08",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 8,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Saúde",
+          "course": "Enfermagem",
+          "year": 2022,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 8: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 8: como a tecnologia contribui para ética e <mark>sustentabilidade</mark>?"
+          ]
+        }
+      },
+      {
+        "id": "lab-pessoa2-11",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-11",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 11,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Saúde",
+          "course": "Enfermagem",
+          "year": 2021,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 11: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 11: como a tecnologia contribui para ética e <mark>sustentabilidade</mark>?"
+          ]
+        }
+      },
+      {
+        "id": "lab-pessoa2-12",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-12",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 12,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Engenharias",
+          "course": "Engenharia Ambiental",
+          "year": 2022,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 12: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 12: como a tecnologia contribui para ética e <mark>sustentabilidade</mark>?"
+          ]
+        }
+      },
+      {
+        "id": "lab-pessoa2-13",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-13",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 13,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Computação",
+          "course": "Sistemas de Informação",
+          "year": 2021,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 13: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 13: como a tecnologia contribui para ética e <mark>sustentabilidade</mark>?"
+          ]
+        }
+      },
+      {
+        "id": "lab-pessoa2-14",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-14",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 14,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Saúde",
+          "course": "Enfermagem",
+          "year": 2022,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 14: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 14: como a tecnologia contribui para ética e <mark>sustentabilidade</mark>?"
+          ]
+        }
+      },
+      {
+        "id": "lab-pessoa2-15",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-15",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 15,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Engenharias",
+          "course": "Engenharia Ambiental",
+          "year": 2021,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 15: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 15: como a tecnologia contribui para ética e <mark>sustentabilidade</mark>?"
+          ]
+        }
+      },
+      {
+        "id": "lab-pessoa2-16",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-16",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 16,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Computação",
+          "course": "Sistemas de Informação",
+          "year": 2022,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 16: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 16: como a tecnologia contribui para ética e <mark>sustentabilidade</mark>?"
+          ]
+        }
+      },
+      {
+        "id": "lab-pessoa2-17",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-17",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 17,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Saúde",
+          "course": "Enfermagem",
+          "year": 2021,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 17: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 17: como a tecnologia contribui para ética e <mark>sustentabilidade</mark>?"
+          ]
+        }
+      },
+      {
+        "id": "lab-pessoa2-18",
+        "score": 0.080004744,
+        "question": {
+          "id": "lab-pessoa2-18",
+          "source_pdf": "FIXTURE_SINTETICA_NAO_OFICIAL.pdf",
+          "source_page": 18,
+          "source_pages": [],
+          "question_number": null,
+          "area": "Engenharias",
+          "course": "Engenharia Ambiental",
+          "year": 2022,
+          "exam_type": "CE",
+          "question_type": "objetiva",
+          "statement": "Questão sintética 18: como a tecnologia contribui para ética e sustentabilidade?",
+          "alternatives": [
+            "A) Avaliar impactos sociais.",
+            "B) Ignorar os impactos."
+          ],
+          "annulled": false,
+          "knowledge_objects": [
+            "Tecnologia",
+            "Sustentabilidade"
+          ],
+          "competencies": [
+            "Ética"
+          ],
+          "media_review_required": false,
+          "media_references": [],
+          "structured_media": [],
+          "extraction_method": "pymupdf_text",
+          "extraction_status": "synthetic_fixture"
+        },
+        "highlight": {
+          "statement": [
+            "Questão sintética 18: como a tecnologia contribui para ética e <mark>sustentabilidade</mark>?"
+          ]
+        }
+      }
+    ]
+  }
+}

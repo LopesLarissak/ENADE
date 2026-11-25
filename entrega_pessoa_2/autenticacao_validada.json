@@ -1,0 +1,18 @@
+[
+  {
+    "endpoint": "/auth/me",
+    "http": 200,
+    "identidade": {
+      "username": "estudante",
+      "role": "ESTUDANTE"
+    }
+  },
+  {
+    "endpoint": "/auth/me",
+    "http": 200,
+    "identidade": {
+      "username": "professor",
+      "role": "PROFESSOR"
+    }
+  }
+]

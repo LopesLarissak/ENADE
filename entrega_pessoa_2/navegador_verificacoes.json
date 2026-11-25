@@ -1,0 +1,46 @@
+[
+  {
+    "rota": "/analytics/courses",
+    "http_confirmado_na_tela": 403,
+    "arquivo": "prints_swagger/02_estudante_403.png"
+  },
+  {
+    "rota": "/auth/me",
+    "http_confirmado_na_tela": 200,
+    "arquivo": "prints_swagger/03_identidade_estudante.png"
+  },
+  {
+    "usuario": "estudante",
+    "identidade_api": {
+      "username": "estudante",
+      "role": "ESTUDANTE"
+    },
+    "login_http": 200,
+    "busca_http": 200,
+    "carrinho_apos_reload": true,
+    "gabarito_visivel": false,
+    "exportacao_navegador": false
+  },
+  {
+    "rota": "/analytics/courses",
+    "http_confirmado_na_tela": 200,
+    "arquivo": "prints_swagger/04_professor_200.png"
+  },
+  {
+    "rota": "/auth/me",
+    "http_confirmado_na_tela": 200,
+    "arquivo": "prints_swagger/03_identidade_professor.png"
+  },
+  {
+    "usuario": "professor",
+    "identidade_api": {
+      "username": "professor",
+      "role": "PROFESSOR"
+    },
+    "login_http": 200,
+    "busca_http": 200,
+    "carrinho_apos_reload": true,
+    "gabarito_visivel": true,
+    "exportacao_navegador": true
+  }
+]

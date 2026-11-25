@@ -1,0 +1,9 @@
+Coleta UTC: 2026-11-25T21:19:47.343833+00:00
+Ambiente: Docker Compose de laboratório, dados sintéticos, sem mocks.
+
+{"endpoint": "/auth/me", "http": 200, "identidade": {"username": "estudante", "role": "ESTUDANTE"}}
+{"endpoint": "/auth/me", "http": 200, "identidade": {"username": "professor", "role": "PROFESSOR"}}
+{"perfil": "SEM_LOGIN", "rota": "/analytics/courses", "http": 401, "resposta": {"detail": "Autenticação necessária"}}
+{"perfil": "ESTUDANTE", "rota": "/analytics/courses", "http": 403, "resposta": {"detail": "Acesso restrito a professores"}}
+{"perfil": "PROFESSOR", "rota": "/analytics/courses", "http": 200, "resposta": [{"course": "Enfermagem", "count": 6}, {"course": "Engenharia Ambiental", "count": 6}, {"course": "Sistemas de Informação", "count": 6}]}
+{"teste": "11 Gabarito e isolamento do cache por perfil", "resultado": "APROVADO", "detalhe": {"estudante_sem_gabarito": true, "professor_com_gabarito": true, "detalhe_estudante_sem_gabarito": true}}

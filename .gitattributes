@@ -1,3 +1,4 @@
 *.pdf binary
 *.docx binary
 *.png binary
+entrega_pessoa_2/*.txt -whitespace

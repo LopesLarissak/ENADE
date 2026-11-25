@@ -1,0 +1,8 @@
+{
+  "coleta_utc": "2026-11-25T21:19:50.289086+00:00",
+  "escopo": "contadores globais da instância Redis no instante da coleta",
+  "ping": true,
+  "keyspace_hits": 108,
+  "keyspace_misses": 106,
+  "chaves": 3
+}

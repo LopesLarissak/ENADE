@@ -1,0 +1,20 @@
+.................................                                        [100%]
+=============================== warnings summary ===============================
+../usr/local/lib/python3.11/site-packages/requests/__init__.py:113
+  /usr/local/lib/python3.11/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (2.8.0) or chardet (7.7.0)/charset_normalizer (3.5.3) doesn't match a supported version!
+    warnings.warn(
+
+../usr/local/lib/python3.11/site-packages/ldap3/utils/asn1.py:50
+  /usr/local/lib/python3.11/site-packages/ldap3/utils/asn1.py:50: DeprecationWarning: tagMap is deprecated. Please use TAG_MAP instead.
+    from pyasn1.codec.ber.encoder import tagMap, typeMap, AbstractItemEncoder
+
+../usr/local/lib/python3.11/site-packages/ldap3/utils/asn1.py:50
+  /usr/local/lib/python3.11/site-packages/ldap3/utils/asn1.py:50: DeprecationWarning: typeMap is deprecated. Please use TYPE_MAP instead.
+    from pyasn1.codec.ber.encoder import tagMap, typeMap, AbstractItemEncoder
+
+../usr/local/lib/python3.11/site-packages/starlette/testclient.py:40
+  /usr/local/lib/python3.11/site-packages/starlette/testclient.py:40: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = typing.Callable[[], typing.ContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+33 passed, 4 warnings in 1.06s
