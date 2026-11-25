@@ -1,10 +1,17 @@
 # Entrega da pessoa 2 — API, busca, Redis e segurança
 
+**ENTREGA PARCIAL. Não são 14/14 itens aprovados.** Leia primeiro
+[`STATUS.md`](STATUS.md) e `verificacoes.json`. O Elasticsearch não ficou saudável
+em 600 segundos, inclusive na tentativa sem Kafka. Há evidências reais de LDAP,
+identidade/perfis, 401/403 e Kerberos no Kafka; as dependências do índice continuam
+bloqueadas. Testes unitários e build não substituem esses testes integrados.
+
 Esta pasta reúne os resultados da execução de laboratório descrita no PR.
 Os arquivos são evidências, não modelos preenchidos com estimativas.
 
-**Dados:** 18 questões explicitamente sintéticas, em 3 cursos e 3 áreas.
-Não comprovam acervo oficial, qualidade da extração de PDFs nem desempenho em produção.
+**Dados:** o script de seed oferece 18 questões sintéticas, em 3 cursos e 3 áreas,
+mas **elas não foram indexadas nesta execução**, por causa do bloqueio do Elasticsearch.
+Não houve comprovação de acervo oficial, extração de PDFs ou desempenho em produção.
 Nenhuma senha, JWT, keytab ou arquivo `.env` deve fazer parte da entrega.
 
 ## Como ler
@@ -12,19 +19,21 @@ Nenhuma senha, JWT, keytab ou arquivo `.env` deve fazer parte da entrega.
 | Arquivo | Conteúdo |
 |---|---|
 | `rotas_api.csv` / `openapi.json` | Rotas e parâmetros extraídos da API executada |
-| `resultado_busca.json` / `busca_cenarios.json` | Respostas reais para as fixtures, filtros e paginação |
-| `latencia_busca.csv` | Cada amostra HTTP, em milissegundos |
-| `redis_metricas.csv` | Percentis, erros e hit rate por modo cold/warm |
-| `teste_carrinho.txt` | Novo login, isolamento por usuário, TTL e reinício Redis |
+| `resultado_busca.json` / `busca_cenarios.json` | Bloqueio e sondagens após parar a dependência; sem resultados fabricados |
+| `latencia_busca.csv` | Somente cabeçalho: nenhuma medição válida de busca |
+| `redis_metricas.csv` | Somente cabeçalho: percentis e hit rate de busca não medidos |
+| `redis_snapshot.json` | PING e contadores globais; não são hit rate da busca |
+| `teste_carrinho.txt` | Leitura vazia e inclusão bloqueada; persistência não aprovada |
 | `teste_ldap.txt` | Identidade/perfil em `/auth/me` e rejeições de login |
-| `teste_perfis_403.txt` | Sem login 401, estudante 403, professor 200 e proteção de gabarito |
-| `teste_kerberos.txt` / `kerberos_*.json` | SPNEGO, identidade real, Kafka/GSSAPI e tickets por serviço |
-| `teste_exportacao.txt` / `exportacao.*` | Respostas, validação, hashes, JSON e PDF de laboratório |
-| `prints_swagger/` | Inventário, identidade e 403/200; credenciais removidas |
-| `prints_frontend/` | Usuário/perfil confirmados, busca e carrinho após recarregar |
-| `navegador_verificacoes.json` | Verificações feitas no Chromium |
+| `teste_perfis_403.txt` | Sem login 401, estudante 403; consulta do professor ao índice e gabarito pendentes |
+| `teste_kerberos.txt` / `kerberos_*.json` | Kafka/GSSAPI aprovado para API e worker; SPNEGO/Elasticsearch bloqueado |
+| `teste_exportacao.txt` / `exportacao_vazia.*` | JSON/PDF reais, mas somente de carrinho vazio |
+| `prints_swagger/` | Inventário, identidades e 403; credenciais removidas |
+| `prints_frontend/` | Usuário/perfil confirmados; não comprovam busca ou carrinho |
+| `navegador_verificacoes.json` | Verificações de autenticação no Chromium |
 | `pytest.txt` / `frontend_build.txt` | Testes unitários e build Vite |
-| `texto_secoes_5_6_7.docx` | Texto das três seções com método, resultados e limitações |
+| `texto_secoes_5_6_7.docx` | Relatório PARCIAL das três seções, com resultados e bloqueios |
+| `elasticsearch_diagnostico.json` | Prazo, estado e eventos selecionados sem credenciais |
 | `manifesto.json` | Origem, condições e hashes para conferência |
 
 `APROVADO` significa que a verificação correspondente passou nesta execução de
@@ -35,8 +44,9 @@ doubles; os coletores de evidências acessam serviços reais.
 
 Requisitos: Docker Engine/Desktop, Compose **2.24.4+** (tags `!override`),
 acesso aos registros de imagens e memória suficiente. Esta execução usou
-aproximadamente 1,5 GiB disponíveis e limites reduzidos de JVM; **4 GiB ou mais
-são recomendados**. Não execute em instalação de produção, nem no mesmo Docker
+aproximadamente 1,5 GiB disponíveis e limites reduzidos de JVM, sem conseguir
+concluir a inicialização do Elasticsearch; **4 GiB ou mais são recomendados**.
+Não execute em instalação de produção, nem no mesmo Docker
 de outro ENADE com os mesmos nomes de containers ou portas.
 
 ```bash
@@ -87,6 +97,13 @@ JWTs. Os prints do Swagger ocultam o comando com Authorization e o campo de
 credencial, preservando o status e a resposta HTTP. A interface exibe somente
 identidade confirmada pelo servidor, inclusive após alteração de perfil no
 localStorage.
+
+O comando acima é o **modo completo**, ainda pendente de execução integral.
+Nesta entrega foram usados `capture_pessoa2 --auth-only` e
+`report_pessoa2 --partial`, para não simular os resultados dependentes do índice.
+As capturas do frontend usam o **build React de produção real**, servido por
+`evaluation/serve_frontend.py` com proxy para a API real, para reduzir a memória
+do servidor de desenvolvimento. Não são telas reconstruídas ou resultados simulados.
 
 Depois de qualquer nova execução, atualize também o teste Kerberos do worker e
 o teste de reinício do Redis antes de gerar o relatório, para não misturar coletas.

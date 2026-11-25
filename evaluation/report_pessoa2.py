@@ -1,11 +1,13 @@
 """Gera DOCX e manifesto somente a partir de evidências coletadas."""
 import csv
+import argparse
 from datetime import datetime, timezone
 import hashlib
 import json
 import os
 from pathlib import Path
 import platform
+import re
 import subprocess
 
 from docx import Document
@@ -99,7 +101,9 @@ def main():
     paragraph(document, f"Verificações do navegador registradas: {len(browser)}. Resultados unitários em pytest.txt e build em frontend_build.txt. Hashes e origem da execução em manifesto.json.")
     document.save(OUT / "texto_secoes_5_6_7.docx")
     source_files = list((ROOT / "app").rglob("*.py")) + list((ROOT / "tests").rglob("*.py"))
-    source_files += [ROOT / "docker-compose.yml", ROOT / "frontend/src.jsx"]
+    source_files += [ROOT / "docker-compose.yml", ROOT / "frontend/src.jsx",
+                     ROOT / "frontend/vite.config.js", ROOT / "frontend/package.json",
+                     ROOT / "frontend/package-lock.json", ROOT / "Dockerfile"]
     source_files += list((ROOT / "evaluation").glob("*.py")) + list((ROOT / "evaluation").glob("*.yml"))
     source_files += [path for path in (ROOT / "infra").rglob("*") if path.is_file()]
     manifest = {
@@ -120,5 +124,87 @@ def main():
     print("Relatório e manifesto gerados a partir dos arquivos de evidência.")
 
 
+def partial():
+    """Relatório de entrega parcial, sem preencher métricas ou aprovações ausentes."""
+    checks = read_json("verificacoes.json")
+    diagnostic = read_json("elasticsearch_diagnostico.json")
+    snapshot = read_json("redis_snapshot.json")
+    unit_log = (OUT / "pytest.txt").read_text()
+    count = re.search(r"(\d+) passed", unit_log)
+    document = Document()
+    document.styles["Normal"].font.name = "Calibri"
+    document.styles["Normal"].font.size = Pt(11)
+    document.add_heading("ENADE — API, busca, Redis e segurança", 0)
+    document.add_heading("Entrega PARCIAL — validações pendentes", 1)
+    paragraph(document, "Pessoa 2: João Victor. Seções 5, 6 e 7. Este documento não declara os 14 requisitos aprovados e não deve ser apresentado como uma entrega integral validada.")
+    paragraph(document, "Gerado em " + datetime.now(timezone.utc).isoformat() + " (UTC). PR: https://github.com/LopesLarissak/ENADE/pull/5.")
+    paragraph(document, "Foram usados serviços reais para autenticação, além de testes unitários explicitamente identificados. Nenhum acervo oficial foi disponibilizado ou indexado. As fixtures de questões no script são sintéticas e não chegaram a ser inseridas, pois o Elasticsearch não iniciou de forma saudável.")
+    document.add_heading("5. Busca e API", 1)
+    paragraph(document, "O OpenAPI foi obtido da API FastAPI em execução. Foram identificadas 14 operações, listadas em rotas_api.csv. A captura do Swagger documenta a interface real. Os testes unitários cobrem filtros, paginação, highlight, cache por perfil e bloqueios HTTP com doubles; isso não comprova a integração com Elasticsearch.")
+    paragraph(document, f"Resultado unitário registrado: {count.group(1) + ' testes passaram' if count else 'consultar pytest.txt'}. O frontend teve build de produção executado, com saída em frontend_build.txt.")
+    paragraph(document, "Busca textual, filtros combinados, paginação/highlight e busca interdisciplinar ficaram bloqueados pela ausência de Elasticsearch saudável. resultado_busca.json registra sondagens HTTP realizadas após sua parada, sem fabricar questões ou resultados. O HTTP 503 dessas sondagens demonstra dependência indisponível; não identifica isoladamente um defeito na implementação da busca.")
+    paragraph(document, "Não foram coletadas latências válidas de busca. latencia_busca.csv e redis_metricas.csv contêm somente cabeçalhos. p50, p95 e p99: NÃO MEDIDOS. Não foram inseridos zeros, estimativas ou resultados de mocks como medições reais.")
+    paragraph(document, "Exportação JSON/PDF: estudante recebeu 403 e professor conseguiu exportar apenas uma lista vazia. Os arquivos exportacao_vazia.json e exportacao_vazia.pdf são identificados como vazios. A exportação com questões continua pendente.")
+    document.add_heading("6. Cache e sessão", 1)
+    paragraph(document, "O Redis real respondeu ao PING e a leituras de carrinhos vazios. O snapshot global da instância foi salvo em redis_snapshot.json. Ele não representa medição de hit rate da busca, que não foi executada com sucesso.")
+    table(document, ["Observação real", "Valor"], [
+        ("PING Redis", snapshot["ping"]),
+        ("keyspace_hits global no snapshot", snapshot["keyspace_hits"]),
+        ("keyspace_misses global no snapshot", snapshot["keyspace_misses"]),
+        ("Hit rate exclusivo da busca", "NÃO MEDIDO"),
+    ])
+    paragraph(document, "A inclusão de questões depende da verificação de existência no Elasticsearch e ficou bloqueada. A leitura de uma lista vazia não comprova persistência de itens, isolamento entre usuários, TTL de 24 horas ou recuperação após reinício. Esses itens não foram aprovados. O código corrige a aceitação de IDs inexistentes; sua regressão unitária passou.")
+    document.add_heading("7. Segurança LDAP e Kerberos", 1)
+    paragraph(document, "O OpenLDAP real autenticou as contas de laboratório estudante e professor. GET /auth/me confirmou, respectivamente, ESTUDANTE e PROFESSOR. Login inválido recebeu 401. Em /analytics/courses, acesso sem login recebeu 401 e estudante autenticado recebeu 403. O acesso do professor a dados do índice ficou bloqueado; não foi apresentado um 200 fictício para essa consulta. O OpenAPI foi corrigido para declarar HTTP Bearer, em vez de um parâmetro manual Authorization ignorado pelo Swagger.")
+    paragraph(document, "API e worker autenticaram no Kafka real usando SASL/GSSAPI Kerberos e obtiveram metadados do broker. Os registros kerberos_api_kafka.json e kerberos_worker_kafka.json contêm o principal esperado, a hora de coleta, o retorno e klist. Nenhum ticket, keytab ou segredo foi publicado. Não se usa klist isolado como prova de autenticação.")
+    paragraph(document, "Kerberos/SPNEGO no Elasticsearch permanece NÃO VALIDADO. O serviço não ficou saudável dentro de 600 segundos mesmo após correções e tentativa em etapas sem Kafka. Redis e LDAP não são apresentados como serviços autenticados por Kerberos. A proteção de gabarito em respostas reais de busca continua pendente.")
+    for filename, caption in [
+        ("prints_swagger/03_identidade_estudante.png", "Identidade/perfil do estudante retornados pela API real."),
+        ("prints_swagger/02_estudante_403.png", "Estudante autenticado: HTTP 403 em rota restrita."),
+        ("prints_swagger/03_identidade_professor.png", "Identidade/perfil do professor retornados pela API real."),
+    ]:
+        image = OUT / filename
+        if image.exists():
+            paragraph(document, caption + " Credenciais foram removidas da captura.")
+            document.add_picture(str(image), width=Inches(6))
+    document.add_heading("Bloqueio, limites e reprodução", 1)
+    paragraph(document, "Resultado da espera: " + diagnostic["resultado"] + ". O ambiente disponibiliza aproximadamente 1,5 GiB de RAM e uma CPU. Não se confirmou uma causa única para a ausência de inicialização saudável. O timeout não é apresentado como confirmação de falha de licença, de memória ou do protocolo Kerberos.")
+    paragraph(document, "Correções implementadas: import canônico do cliente Elasticsearch, filtros do analisador brasileiro, inicialização do KDC, acesso a keytabs, localização do keytab na configuração do Elasticsearch, dependência dos certificados, parâmetros JAAS/GSSAPI Kafka e keytab do cliente, healthchecks, rejeição de questão inexistente e retorno 503 em analytics quando o índice está indisponível. No frontend: identidade confirmada na API, remoção de credenciais exibidas, limpeza ao sair, paginação e indicadores autenticados. Correção implementada não equivale a integração aprovada.")
+    paragraph(document, "Limites de segurança do laboratório: LDAP sem TLS; Kafka SASL_PLAINTEXT; keytabs compartilhados entre containers confiáveis; JWT em localStorage; licença Elastic trial com validade limitada. Não são garantias de produção ou de conformidade.")
+    paragraph(document, "Para completar a validação, a recomendação é um laboratório NOVO com 4 GiB ou mais e execução de bash evaluation/run_lab_staged.sh. Isso é uma recomendação de reprodução, não garantia de sucesso. O script recusa índice não vazio e não remove volumes. O modelo GitHub Actions ficou inativo em evaluation/github-actions-pessoa2.yml; não é necessário reautorizar a conexão para executar os scripts localmente.")
+    document.add_heading("Matriz de requisitos", 1)
+    table(document, ["Requisito", "Estado"], [(item["teste"], item["resultado"]) for item in checks])
+    paragraph(document, "Consultar STATUS.md, verificacoes.json e os registros citados para escopo e limites de cada teste. O PR não altera a main nem as regras de revisão; não há merge automático.")
+    document.save(OUT / "texto_secoes_5_6_7.docx")
+    sources = [ROOT / "docker-compose.yml", ROOT / "frontend/src.jsx",
+               ROOT / "frontend/vite.config.js", ROOT / "frontend/package.json",
+               ROOT / "frontend/package-lock.json", ROOT / "Dockerfile"]
+    for folder in ["app", "tests", "evaluation", "infra"]:
+        sources.extend(p for p in (ROOT / folder).rglob("*")
+                       if p.is_file() and p.suffix in {".py", ".sh", ".yml", ".conf", ".ldif"})
+    manifest = {
+        "estado": "PARCIAL — não são 14 testes aprovados",
+        "coleta_utc": datetime.now(timezone.utc).isoformat(),
+        "repositorio": "https://github.com/LopesLarissak/ENADE",
+        "pull_request": "https://github.com/LopesLarissak/ENADE/pull/5",
+        "git_head_no_momento_do_relatorio": os.getenv("EVAL_SOURCE_COMMIT"),
+        "ambiente": "Docker local, aproximadamente 1,5 GiB RAM e uma CPU; execução em etapas",
+        "dados": "contas LDAP de laboratório; nenhum acervo oficial nem fixture de questão indexados",
+        "segredos_incluidos": False,
+        "arquivos_fonte_sha256": {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
+                                  for p in sorted(set(sources))},
+        "evidencias_sha256": {str(p.relative_to(OUT)): hashlib.sha256(p.read_bytes()).hexdigest()
+                              for p in sorted(OUT.rglob("*")) if p.is_file() and p.name != "manifesto.json"},
+    }
+    write_manifest = OUT / "manifesto.json"
+    write_manifest.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")
+    print("DOCX PARCIAL e manifesto gerados, com bloqueios e ausência de métricas explicitados.")
+
+
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--partial", action="store_true")
+    if parser.parse_args().partial:
+        partial()
+    else:
+        main()

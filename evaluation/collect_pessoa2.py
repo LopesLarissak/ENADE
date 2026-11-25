@@ -47,8 +47,10 @@ def request(path, bearer=None, method="GET", data=None):
     elapsed = (time.perf_counter() - start) * 1000
     if "json" in response.headers.get("Content-Type", ""):
         body = json.loads(raw)
-    else:
+    elif "application/pdf" in response.headers.get("Content-Type", ""):
         body = raw
+    else:
+        body = raw.decode("utf-8", errors="replace")
     return response.status, body, elapsed
 
 

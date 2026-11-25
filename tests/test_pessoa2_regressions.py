@@ -38,6 +38,15 @@ def test_kafka_gssapi_config_includes_keytab(monkeypatch):
     assert config["sasl.mechanism"] == "GSSAPI"
 
 
+def test_swagger_declares_bearer_instead_of_ignored_authorization_header(client):
+    schema = client.get("/openapi.json").json()
+    assert schema["components"]["securitySchemes"]["HTTPBearer"]["scheme"] == "bearer"
+    operation = schema["paths"]["/auth/me"]["get"]
+    assert {"HTTPBearer": []} in operation["security"]
+    assert not any(parameter["name"].lower() == "authorization"
+                   for parameter in operation.get("parameters", []))
+
+
 def test_health_ldap_false_is_degraded(monkeypatch, client):
     monkeypatch.setattr(main, "es", SimpleNamespace(ping=lambda: True))
     monkeypatch.setattr(main, "redis", SimpleNamespace(ping=lambda: True))
@@ -70,6 +79,16 @@ def test_student_receives_http_403(client, path):
 @pytest.mark.parametrize("path", ["/auth/me", "/cart/unit", "/analytics/courses"])
 def test_private_routes_require_login(client, path):
     assert client.get(path).status_code == 401
+
+
+@pytest.mark.parametrize("path", ["/analytics/courses", "/analytics/competencies",
+                                 "/analytics/competencies/timeline"])
+def test_analytics_unavailable_returns_503(monkeypatch, client, path):
+    def unavailable(**kwargs):
+        raise ConnectionError("unit: dependência indisponível")
+    monkeypatch.setattr(main, "es", SimpleNamespace(search=unavailable))
+    response = client.get(path, headers=authorization("PROFESSOR"))
+    assert response.status_code == 503
 
 
 def test_search_filters_paging_highlight_and_profile_cache(monkeypatch, client):
