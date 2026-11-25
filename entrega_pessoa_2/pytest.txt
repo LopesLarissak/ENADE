@@ -1,4 +1,4 @@
-............................                                             [100%]
+.................................                                        [100%]
 =============================== warnings summary ===============================
 ../usr/local/lib/python3.11/site-packages/requests/__init__.py:113
   /usr/local/lib/python3.11/site-packages/requests/__init__.py:113: RequestsDependencyWarning: urllib3 (2.8.0) or chardet (7.7.0)/charset_normalizer (3.5.3) doesn't match a supported version!
@@ -17,4 +17,4 @@
     _PortalFactoryType = typing.Callable[[], typing.ContextManager[anyio.abc.BlockingPortal]]
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-28 passed, 4 warnings in 1.84s
+33 passed, 4 warnings in 4.10s

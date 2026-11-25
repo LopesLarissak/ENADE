@@ -1,4 +1,4 @@
-Coleta UTC: 2026-11-25T01:49:07.194659+00:00
+Coleta UTC: 2026-11-25T02:12:59.374388+00:00
 Ambiente: Docker Compose de laboratório, dados sintéticos, sem mocks.
 
 {"endpoint": "/auth/me", "http": 200, "identidade": {"username": "estudante", "role": "ESTUDANTE"}}

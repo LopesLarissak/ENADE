@@ -1,0 +1,37 @@
+{
+  "estado": "BLOQUEADO",
+  "sondagens": [
+    {
+      "cenario": "textual",
+      "rota": "/questions?q=tecnologia",
+      "http": 503,
+      "resposta": {
+        "detail": "Índice de busca indisponível"
+      }
+    },
+    {
+      "cenario": "filtros",
+      "rota": "/questions?q=tecnologia&area=Computacao&year=2021&annulled=false",
+      "http": 503,
+      "resposta": {
+        "detail": "Índice de busca indisponível"
+      }
+    },
+    {
+      "cenario": "paginacao_highlight",
+      "rota": "/questions?q=tecnologia&page=2&size=5",
+      "http": 503,
+      "resposta": {
+        "detail": "Índice de busca indisponível"
+      }
+    },
+    {
+      "cenario": "interdisciplinar",
+      "rota": "/questions?q=sustentabilidade",
+      "http": 503,
+      "resposta": {
+        "detail": "Índice de busca indisponível"
+      }
+    }
+  ]
+}

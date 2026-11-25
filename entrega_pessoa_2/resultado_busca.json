@@ -1,0 +1,38 @@
+{
+  "estado": "BLOQUEADO",
+  "contexto": "Elasticsearch não ficou saudável em 600 segundos. As sondagens HTTP abaixo foram feitas após sua parada; 503 é evidência de dependência indisponível, não aprovação nem diagnóstico de defeito na busca.",
+  "sondagens": [
+    {
+      "cenario": "textual",
+      "rota": "/questions?q=tecnologia",
+      "http": 503,
+      "resposta": {
+        "detail": "Índice de busca indisponível"
+      }
+    },
+    {
+      "cenario": "filtros",
+      "rota": "/questions?q=tecnologia&area=Computacao&year=2021&annulled=false",
+      "http": 503,
+      "resposta": {
+        "detail": "Índice de busca indisponível"
+      }
+    },
+    {
+      "cenario": "paginacao_highlight",
+      "rota": "/questions?q=tecnologia&page=2&size=5",
+      "http": 503,
+      "resposta": {
+        "detail": "Índice de busca indisponível"
+      }
+    },
+    {
+      "cenario": "interdisciplinar",
+      "rota": "/questions?q=sustentabilidade",
+      "http": 503,
+      "resposta": {
+        "detail": "Índice de busca indisponível"
+      }
+    }
+  ]
+}
