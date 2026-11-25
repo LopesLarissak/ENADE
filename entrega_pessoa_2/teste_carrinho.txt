@@ -1,5 +1,0 @@
-Coleta UTC: 2026-11-25T02:25:03.917567+00:00
-Ambiente: Docker Compose de laboratório, dados sintéticos, sem mocks.
-
-{"perfil": "ESTUDANTE", "cenario": "leitura de carrinho vazio", "http": 200, "resposta": {"session_id": "evidencias-vazias-pessoa2", "items": []}}
-{"perfil": "PROFESSOR", "cenario": "leitura de carrinho vazio", "http": 200, "resposta": {"session_id": "evidencias-vazias-pessoa2", "items": []}}

@@ -36,7 +36,14 @@ def main():
     p("Evidências verificadas • Seções 5, 6 e 7")
     p("Responsável no escopo informado: João Victor. Documento elaborado a partir dos registros de execução, sem assinatura ou atestado de autoria pessoal.")
     p("Gerado em " + datetime.now(timezone.utc).isoformat() + " (UTC).")
-    p("Escopo: rotas/OpenAPI, autenticação LDAP, identidade e perfis, controle de acesso, autenticação Kerberos com Kafka, snapshot Redis, leitura e exportação de carrinhos vazios. Os testes unitários usam doubles identificados; os registros de autenticação e HTTP acessam serviços reais.")
+    full = (OUT / "verificacoes.json").exists() and (OUT / "exportacao.pdf").exists()
+    if full:
+        checks = json.loads((OUT / "verificacoes.json").read_text())
+        p(f"Escopo: execução integrada em Docker Compose ({os.getenv('EVAL_ENVIRONMENT', 'laboratório')}), com Elasticsearch, Kafka, Redis, OpenLDAP e KDC reais e 18 questões sintéticas identificadas. "
+          f"{sum(c['resultado'] == 'APROVADO' for c in checks)} de {len(checks)} verificações automáticas aprovadas (verificacoes.json). Os testes unitários usam doubles identificados.")
+        table(document, ["Verificação", "Resultado"], [(c["teste"], c["resultado"]) for c in checks])
+    else:
+        p("Escopo: rotas/OpenAPI, autenticação LDAP, identidade e perfis, controle de acesso, autenticação Kerberos com Kafka, snapshot Redis, leitura e exportação de carrinhos vazios. Os testes unitários usam doubles identificados; os registros de autenticação e HTTP acessam serviços reais.")
     document.add_heading("5. Busca e API", 1)
     routes = list(csv.DictReader((OUT / "rotas_api.csv").open()))
     p(f"Foram extraídas {len(routes)} operações do OpenAPI da API FastAPI em execução. rotas_api.csv relaciona métodos, caminhos, identificadores e parâmetros; openapi.json preserva o esquema. A autenticação do Swagger usa o esquema HTTP Bearer.")
@@ -73,9 +80,12 @@ def main():
           "hits / (hits + misses). São contadores globais; em produção com outros clientes o escopo muda.")
         table(document, ["Modo", "Hits", "Misses", "Hit rate"],
               [(row["modo"], row["hits"], row["misses"], row["hit_rate"]) for row in metrics])
-    p("teste_exportacao.txt identifica as respostas e o cenário exercitado em JSON/PDF. Os arquivos "
-      "exportacao_vazia.* identificam listas vazias; exportacao.json e exportacao.pdf identificam as questões "
-      "selecionadas quando presentes nesta coleta.")
+    if full:
+        p("Carrinho: a questão adicionada pelo estudante permaneceu após novo login e após reinício do processo Redis (AOF); outro usuário com o mesmo session_id recebeu lista vazia; ID inexistente recebeu HTTP 404; TTL de 86400 s. Detalhes em teste_carrinho.txt.")
+        p("Gabarito: nas buscas e no detalhe da questão, respostas para o perfil ESTUDANTE não contêm answer_key, enquanto o PROFESSOR recebe o gabarito; o cache Redis é separado por perfil. As capturas do frontend mostram 'Gabarito: A' apenas para o professor.")
+        p("Exportação com questão selecionada: professor recebeu HTTP 200 com JSON válido e PDF válido (exportacao.json, exportacao.pdf); estudante recebeu HTTP 403 nos dois formatos. Tamanhos e SHA-256 em teste_exportacao.txt.")
+    else:
+        p("teste_exportacao.txt identifica as respostas e o cenário de lista vazia em JSON/PDF (exportacao_vazia.*).")
     document.add_heading("7. Segurança LDAP e Kerberos", 1)
     p("As contas de laboratório estudante e professor foram autenticadas no OpenLDAP real. GET /auth/me retornou as identidades e os perfis ESTUDANTE e PROFESSOR. Um login inválido recebeu HTTP 401; uma rota restrita sem login retornou 401; o estudante autenticado recebeu HTTP 403 em /analytics/courses.")
     p("No login, a implementação faz bind de serviço para localizar a identidade, bind com o DN do usuário e consulta dos grupos LDAP para determinar o perfil. O frontend confirma a identidade no servidor e remove dados de exibição ao sair. As capturas combinam identidade/perfil e resposta de controle de acesso.")
@@ -89,11 +99,14 @@ def main():
         p("Os registros Kerberos também confirmam a identidade devolvida por /_security/_authenticate "
           "no Elasticsearch, via SPNEGO com autenticação mútua e validação da CA. Eles preservam a recusa "
           "da requisição anônima e a proteção de escrita do principal da API.")
-    p("LDAP autentica as pessoas; o JWT emitido pela API permite identificar usuário e perfil nas requisições seguintes. Kerberos autentica API e worker ao acessarem Kafka. Os registros excluem senhas, JWTs, conteúdo de keytabs e tickets.")
+    p("LDAP autentica as pessoas; o JWT emitido pela API permite identificar usuário e perfil nas requisições seguintes. Kerberos autentica API e worker ao acessarem Kafka" + (" e Elasticsearch" if full else "") + ". Os registros excluem senhas, JWTs, conteúdo de keytabs e tickets.")
     for filename, caption in [
         ("prints_swagger/03_identidade_estudante.png", "Identidade e perfil do estudante retornados pela API."),
         ("prints_swagger/02_estudante_403.png", "Estudante autenticado recebe HTTP 403 em rota restrita."),
         ("prints_swagger/03_identidade_professor.png", "Identidade e perfil do professor retornados pela API."),
+        ("prints_swagger/04_professor_200.png", "Professor autenticado recebe HTTP 200 na mesma rota restrita."),
+        ("prints_frontend/professor_busca_e_sessao.png", "Frontend do professor: busca com highlight, gabarito visível, lista persistida e exportação."),
+        ("prints_frontend/estudante_busca_e_sessao.png", "Frontend do estudante: mesma busca, sem gabarito, lista persistida."),
     ]:
         path = OUT / filename
         if path.exists():
@@ -110,7 +123,9 @@ def main():
         sources.extend(path for path in (ROOT / folder).rglob("*")
                        if path.is_file() and path.suffix in {".py", ".sh", ".yml", ".conf", ".ldif"})
     manifest = {
-        "escopo": "evidências verificadas de rotas, autenticação, Redis e cenários de carrinho vazio",
+        "escopo": ("execução integrada completa: busca, Redis, carrinho, LDAP, Kerberos (Kafka e Elasticsearch) e exportação"
+                   if full else "evidências verificadas de rotas, autenticação, Redis e cenários de carrinho vazio"),
+        "execucao_evidencias": os.getenv("EVAL_EVIDENCE_RUN"),
         "gerado_utc": datetime.now(timezone.utc).isoformat(),
         "repositorio": "https://github.com/LopesLarissak/ENADE",
         "pull_request": "https://github.com/LopesLarissak/ENADE/pull/5",

@@ -1,5 +1,0 @@
-Coleta UTC: 2026-11-25T02:25:03.929231+00:00
-Ambiente: Docker Compose de laboratório, dados sintéticos, sem mocks.
-
-{"formato": "json", "escopo": "carrinho vazio", "estudante_http": 403, "professor_http": 200}
-{"formato": "pdf", "escopo": "carrinho vazio", "estudante_http": 403, "professor_http": 200}
