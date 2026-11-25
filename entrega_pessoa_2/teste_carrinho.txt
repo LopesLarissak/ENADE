@@ -1,0 +1,5 @@
+Coleta UTC: 2026-11-25T21:19:47.411123+00:00
+Ambiente: Docker Compose de laboratório, dados sintéticos, sem mocks.
+
+{"teste": "08 Carrinho e persistência da sessão", "resultado": "APROVADO", "detalhe": {"adicionar_http": 200, "novo_login": {"session_id": "evidencia-c903f611ea4a", "items": ["lab-pessoa2-01"]}, "outro_usuario": {"session_id": "evidencia-c903f611ea4a", "items": []}, "id_inexistente_http": 404, "ttl_s": 86400, "escopo": "persistência entre conexões e logins; reinício do Redis é testado separadamente"}}
+{"teste": "Carrinho após reinício do processo Redis", "http": 200, "preservado": true}

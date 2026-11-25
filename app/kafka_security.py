@@ -10,5 +10,6 @@ def kafka_client_config() -> dict:
         "sasl.mechanism": "GSSAPI",
         "sasl.kerberos.service.name": os.getenv("KAFKA_KERBEROS_SERVICE_NAME", "kafka"),
         "sasl.kerberos.principal": os.getenv("KRB5_PRINCIPAL", ""),
+        "sasl.kerberos.keytab": os.getenv("KRB5_KEYTAB", ""),
         "enable.ssl.certificate.verification": True,
     }

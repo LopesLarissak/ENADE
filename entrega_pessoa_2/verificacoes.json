@@ -1,0 +1,228 @@
+[
+  {
+    "teste": "01 Swagger/OpenAPI",
+    "resultado": "APROVADO",
+    "detalhe": "HTTP 200"
+  },
+  {
+    "teste": "09/10 Login ESTUDANTE",
+    "resultado": "APROVADO",
+    "detalhe": {
+      "username": "estudante",
+      "role": "ESTUDANTE"
+    }
+  },
+  {
+    "teste": "09/10 Login PROFESSOR",
+    "resultado": "APROVADO",
+    "detalhe": {
+      "username": "professor",
+      "role": "PROFESSOR"
+    }
+  },
+  {
+    "teste": "LDAP rejeita login inválido e injeção",
+    "resultado": "APROVADO",
+    "detalhe": {
+      "login_invalido": 401,
+      "filtro_escapado": 401
+    }
+  },
+  {
+    "teste": "02 Busca textual",
+    "resultado": "APROVADO",
+    "detalhe": {
+      "http": 200,
+      "total": 18
+    }
+  },
+  {
+    "teste": "03 Filtros combinados",
+    "resultado": "APROVADO",
+    "detalhe": {
+      "http": 200,
+      "total": 3
+    }
+  },
+  {
+    "teste": "04 Paginação e highlight",
+    "resultado": "APROVADO",
+    "detalhe": {
+      "pagina1": [
+        "lab-pessoa2-01",
+        "lab-pessoa2-03",
+        "lab-pessoa2-04",
+        "lab-pessoa2-07",
+        "lab-pessoa2-10"
+      ],
+      "pagina2": [
+        "lab-pessoa2-02",
+        "lab-pessoa2-05",
+        "lab-pessoa2-06",
+        "lab-pessoa2-08",
+        "lab-pessoa2-09"
+      ],
+      "mark_presente": true
+    }
+  },
+  {
+    "teste": "05 Busca interdisciplinar",
+    "resultado": "APROVADO",
+    "detalhe": {
+      "tema": "sustentabilidade",
+      "areas": [
+        "Computação",
+        "Engenharias",
+        "Saúde"
+      ],
+      "limite": "recuperação textual entre áreas; não comprova busca semântica"
+    }
+  },
+  {
+    "teste": "12 Acesso SEM_LOGIN",
+    "resultado": "APROVADO",
+    "detalhe": {
+      "http": 401,
+      "esperado": 401
+    }
+  },
+  {
+    "teste": "12 Acesso ESTUDANTE",
+    "resultado": "APROVADO",
+    "detalhe": {
+      "http": 403,
+      "esperado": 403
+    }
+  },
+  {
+    "teste": "12 Acesso PROFESSOR",
+    "resultado": "APROVADO",
+    "detalhe": {
+      "http": 200,
+      "esperado": 200
+    }
+  },
+  {
+    "teste": "11 Gabarito e isolamento do cache por perfil",
+    "resultado": "APROVADO",
+    "detalhe": {
+      "estudante_sem_gabarito": true,
+      "professor_com_gabarito": true,
+      "detalhe_estudante_sem_gabarito": true
+    }
+  },
+  {
+    "teste": "08 Carrinho e persistência da sessão",
+    "resultado": "APROVADO",
+    "detalhe": {
+      "adicionar_http": 200,
+      "novo_login": {
+        "session_id": "evidencia-c903f611ea4a",
+        "items": [
+          "lab-pessoa2-01"
+        ]
+      },
+      "outro_usuario": {
+        "session_id": "evidencia-c903f611ea4a",
+        "items": []
+      },
+      "id_inexistente_http": 404,
+      "ttl_s": 86400,
+      "escopo": "persistência entre conexões e logins; reinício do Redis é testado separadamente"
+    }
+  },
+  {
+    "teste": "14 Exportação JSON",
+    "resultado": "APROVADO",
+    "detalhe": {
+      "formato": "json",
+      "estudante_http": 403,
+      "professor_http": 200,
+      "conteudo_valido": true,
+      "bytes": 772,
+      "sha256": "090d2ab0901307553d00a4c86808a601f37c779f9371efdead56485e5433690f"
+    }
+  },
+  {
+    "teste": "14 Exportação PDF",
+    "resultado": "APROVADO",
+    "detalhe": {
+      "formato": "pdf",
+      "estudante_http": 403,
+      "professor_http": 200,
+      "conteudo_valido": true,
+      "bytes": 1755,
+      "sha256": "a629fce0dba6ef8e7a2638a55ff60978f96a08ab2022a3487922d4f70d22508b"
+    }
+  },
+  {
+    "teste": "06 Latência p50/p95/p99",
+    "resultado": "APROVADO",
+    "detalhe": {
+      "resumo": [
+        {
+          "modo": "cold",
+          "amostras": 100,
+          "p50_ms": 19.5055,
+          "p95_ms": 24.0393,
+          "p99_ms": 28.3198,
+          "hits": 0,
+          "misses": 100,
+          "hit_rate": 0.0,
+          "erros_http": 0
+        },
+        {
+          "modo": "warm",
+          "amostras": 100,
+          "p50_ms": 2.71,
+          "p95_ms": 3.1323,
+          "p99_ms": 3.2843,
+          "hits": 100,
+          "misses": 0,
+          "hit_rate": 1.0,
+          "erros_http": 0
+        }
+      ],
+      "metodo": "sequencial, 1 cliente, RTT HTTP interno, 18 fixtures; não produção"
+    }
+  },
+  {
+    "teste": "07 Hit rate Redis",
+    "resultado": "APROVADO",
+    "detalhe": {
+      "fonte": "delta INFO stats; laboratório sem tráfego concorrente",
+      "resumo": [
+        {
+          "modo": "cold",
+          "amostras": 100,
+          "p50_ms": 19.5055,
+          "p95_ms": 24.0393,
+          "p99_ms": 28.3198,
+          "hits": 0,
+          "misses": 100,
+          "hit_rate": 0.0,
+          "erros_http": 0
+        },
+        {
+          "modo": "warm",
+          "amostras": 100,
+          "p50_ms": 2.71,
+          "p95_ms": 3.1323,
+          "p99_ms": 3.2843,
+          "hits": 100,
+          "misses": 0,
+          "hit_rate": 1.0,
+          "erros_http": 0
+        }
+      ]
+    }
+  },
+  {
+    "teste": "13 Kerberos real da API",
+    "resultado": "APROVADO",
+    "detalhe": {
+      "arquivo": "kerberos_api.json",
+      "resultado": "APROVADO"
+    }
+  }
+]

@@ -17,3 +17,4 @@ data/pdfs/*.pdf
 
 data/extracted_media/
 data/benchmark.csv
+.evaluation-private/

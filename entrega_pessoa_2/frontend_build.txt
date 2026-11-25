@@ -1,0 +1,90 @@
+ Network enade-plataforma_default  Creating
+ Network enade-plataforma_default  Created
+ Volume "enade-plataforma_kerberos_db"  Creating
+ Volume "enade-plataforma_kerberos_db"  Created
+ Volume "enade-plataforma_elasticsearch_certs"  Creating
+ Volume "enade-plataforma_elasticsearch_certs"  Created
+ Volume "enade-plataforma_es_data"  Creating
+ Volume "enade-plataforma_es_data"  Created
+ Volume "enade-plataforma_ldap_config"  Creating
+ Volume "enade-plataforma_ldap_config"  Created
+ Volume "enade-plataforma_elasticsearch_keytab"  Creating
+ Volume "enade-plataforma_elasticsearch_keytab"  Created
+ Volume "enade-plataforma_ldap_data"  Creating
+ Volume "enade-plataforma_ldap_data"  Created
+ Volume "enade-plataforma_kafka_data"  Creating
+ Volume "enade-plataforma_kafka_data"  Created
+ Volume "enade-plataforma_redis_data"  Creating
+ Volume "enade-plataforma_redis_data"  Created
+ Volume "enade-plataforma_kerberos_keytabs"  Creating
+ Volume "enade-plataforma_kerberos_keytabs"  Created
+ frontend Pulling 
+ 6a0ac1617861 Pulling fs layer 
+ 4feea04c1543 Pulling fs layer 
+ b2cbbfe903b0 Pulling fs layer 
+ fff4e2c1b189 Pulling fs layer 
+ fff4e2c1b189 Waiting 
+ 6a0ac1617861 Downloading [>                                                  ]  48.51kB/3.864MB
+ 4feea04c1543 Downloading [>                                                  ]  441.7kB/43.23MB
+ b2cbbfe903b0 Downloading [>                                                  ]  15.74kB/1.262MB
+ 6a0ac1617861 Verifying Checksum 
+ 6a0ac1617861 Download complete 
+ 6a0ac1617861 Extracting [>                                                  ]  65.54kB/3.864MB
+ b2cbbfe903b0 Verifying Checksum 
+ b2cbbfe903b0 Download complete 
+ 4feea04c1543 Downloading [================================>                  ]  28.31MB/43.23MB
+ 6a0ac1617861 Extracting [======================================>            ]  2.949MB/3.864MB
+ 6a0ac1617861 Extracting [==================================================>]  3.864MB/3.864MB
+ 6a0ac1617861 Extracting [==================================================>]  3.864MB/3.864MB
+ 4feea04c1543 Verifying Checksum 
+ 4feea04c1543 Download complete 
+ 6a0ac1617861 Pull complete 
+ 4feea04c1543 Extracting [>                                                  ]  458.8kB/43.23MB
+ fff4e2c1b189 Downloading [==================================================>]     445B/445B
+ fff4e2c1b189 Verifying Checksum 
+ fff4e2c1b189 Download complete 
+ 4feea04c1543 Extracting [==========>                                        ]  9.175MB/43.23MB
+ 4feea04c1543 Extracting [=====================>                             ]  18.35MB/43.23MB
+ 4feea04c1543 Extracting [================================>                  ]  28.44MB/43.23MB
+ 4feea04c1543 Extracting [===========================================>       ]  37.62MB/43.23MB
+ 4feea04c1543 Extracting [==============================================>    ]  40.37MB/43.23MB
+ 4feea04c1543 Extracting [===============================================>   ]  41.29MB/43.23MB
+ 4feea04c1543 Extracting [================================================>  ]  41.75MB/43.23MB
+ 4feea04c1543 Extracting [================================================>  ]  42.21MB/43.23MB
+ 4feea04c1543 Extracting [=================================================> ]  43.12MB/43.23MB
+ 4feea04c1543 Extracting [==================================================>]  43.23MB/43.23MB
+ 4feea04c1543 Pull complete 
+ b2cbbfe903b0 Extracting [=>                                                 ]  32.77kB/1.262MB
+ b2cbbfe903b0 Extracting [==================================================>]  1.262MB/1.262MB
+ b2cbbfe903b0 Extracting [==================================================>]  1.262MB/1.262MB
+ b2cbbfe903b0 Pull complete 
+ fff4e2c1b189 Extracting [==================================================>]     445B/445B
+ fff4e2c1b189 Extracting [==================================================>]     445B/445B
+ fff4e2c1b189 Pull complete 
+ frontend Pulled 
+
+added 21 packages, and audited 22 packages in 2s
+
+9 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 12.2.3
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.3
+npm notice To update run: npm install -g npm@12.2.3
+npm notice
+
+> build
+> vite build
+
+vite v8.3.5 building client environment for production...
+transforming...
+✓ 15 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.16 kB │ gzip:  0.14 kB
+dist/assets/index-B0f9_ilB.css    1.92 kB │ gzip:  0.87 kB
+dist/assets/index-BfzoNkJo.js   228.24 kB │ gzip: 71.54 kB
+
+✓ built in 149ms

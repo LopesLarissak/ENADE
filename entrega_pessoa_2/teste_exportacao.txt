@@ -1,0 +1,5 @@
+Coleta UTC: 2026-11-25T21:19:47.460329+00:00
+Ambiente: Docker Compose de laboratório, dados sintéticos, sem mocks.
+
+{"formato": "json", "estudante_http": 403, "professor_http": 200, "conteudo_valido": true, "bytes": 772, "sha256": "090d2ab0901307553d00a4c86808a601f37c779f9371efdead56485e5433690f"}
+{"formato": "pdf", "estudante_http": 403, "professor_http": 200, "conteudo_valido": true, "bytes": 1755, "sha256": "a629fce0dba6ef8e7a2638a55ff60978f96a08ab2022a3487922d4f70d22508b"}

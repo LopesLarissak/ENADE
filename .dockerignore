@@ -18,3 +18,5 @@ data/pdfs/*
 
 data/extracted_media/
 data/benchmark.csv
+.evaluation-private/
+entrega_pessoa_2/

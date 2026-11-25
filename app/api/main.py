@@ -7,7 +7,8 @@ import time
 from typing import Optional
 
 import jwt
-from fastapi import FastAPI, HTTPException, Query, Header, Response
+from fastapi import FastAPI, HTTPException, Query, Header, Response, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from app.kerberos_elasticsearch import KerberosElasticsearch, ElasticsearchHTTPError
@@ -33,6 +34,16 @@ app.add_middleware(CORSMiddleware, allow_origins=API_ALLOWED_ORIGINS,
 es = KerberosElasticsearch(ELASTIC_URL, request_timeout=10)
 redis = Redis.from_url(REDIS_URL, decode_responses=True)
 INDEX = "enade-questions"
+bearer_scheme = HTTPBearer(auto_error=False)
+
+
+def authorization_header(
+    authorization: Optional[str] = Header(None, include_in_schema=False),
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(bearer_scheme),
+):
+    # HTTPBearer declara o esquema OpenAPI correto. Preservar o header bruto mantém
+    # a rejeição de esquemas inválidos e a semântica de busca pública existentes.
+    return authorization
 
 class LoginPayload(BaseModel):
     username: str = Field(min_length=1, max_length=128)
@@ -99,7 +110,7 @@ def health():
     for name, fn in probes.items():
         try:
             result = fn()
-            checks[name] = bool(result) if name in ("elasticsearch", "redis") else True
+            checks[name] = bool(result) if name in ("elasticsearch", "redis", "ldap") else True
         except Exception as exc:
             checks[name] = False
             logger.warning("Healthcheck %s falhou: %s", name, exc)
@@ -125,7 +136,7 @@ def login(payload: LoginPayload):
 
 
 @app.get("/auth/me")
-def me(authorization: Optional[str] = Header(None)):
+def me(authorization: Optional[str] = Depends(authorization_header)):
     return user_from_header(authorization, required=True)
 
 
@@ -135,7 +146,7 @@ def search_questions(q: str = "", area: str | None = None, course: str | None = 
                     question_type: str | None = None, competency: str | None = None,
                     annulled: bool | None = None, page: int = Query(1, ge=1),
                     size: int = Query(10, ge=1, le=100),
-                    authorization: Optional[str] = Header(None)):
+                    authorization: Optional[str] = Depends(authorization_header)):
     user = user_from_header(authorization)
     params = [q, area, course, year, exam_type, question_type, competency, annulled, page, size, user["role"]]
     cache_key = "search:" + hashlib.sha256(json.dumps(params, ensure_ascii=False).encode()).hexdigest()
@@ -169,7 +180,7 @@ def search_questions(q: str = "", area: str | None = None, course: str | None = 
 
 
 @app.get("/questions/{question_id}")
-def get_question(question_id: str, authorization: Optional[str] = Header(None)):
+def get_question(question_id: str, authorization: Optional[str] = Depends(authorization_header)):
     user = user_from_header(authorization)
     try: doc = dict(es.get(index=INDEX, id=question_id)["_source"])
     except ElasticsearchHTTPError as exc:
@@ -182,25 +193,32 @@ def get_question(question_id: str, authorization: Optional[str] = Header(None)):
 
 
 @app.get("/analytics/courses")
-def analytics_courses(authorization: Optional[str] = Header(None)):
+def analytics_courses(authorization: Optional[str] = Depends(authorization_header)):
     professor(authorization)
-    r = es.search(index=INDEX, size=0, aggs={"courses": {"terms": {"field": "course", "size": 200}}})
+    r = analytics_search(size=0, aggs={"courses": {"terms": {"field": "course", "size": 200}}})
     return [{"course": b["key"], "count": b["doc_count"]} for b in r["aggregations"]["courses"]["buckets"]]
 
 
 @app.get("/analytics/competencies")
-def analytics_competencies(authorization: Optional[str] = Header(None)):
+def analytics_competencies(authorization: Optional[str] = Depends(authorization_header)):
     professor(authorization)
-    r = es.search(index=INDEX, size=0, aggs={"competencies": {"terms": {"field": "competencies", "size": 200}}})
+    r = analytics_search(size=0, aggs={"competencies": {"terms": {"field": "competencies", "size": 200}}})
     return [{"competency": b["key"], "count": b["doc_count"]} for b in r["aggregations"]["competencies"]["buckets"]]
 
 
 @app.get("/analytics/competencies/timeline")
-def competency_timeline(authorization: Optional[str] = Header(None)):
+def competency_timeline(authorization: Optional[str] = Depends(authorization_header)):
     professor(authorization)
-    r = es.search(index=INDEX, size=0, aggs={"years": {"histogram": {"field": "year", "interval": 1, "min_doc_count": 1},
+    r = analytics_search(size=0, aggs={"years": {"histogram": {"field": "year", "interval": 1, "min_doc_count": 1},
         "aggs": {"competencies": {"terms": {"field": "competencies", "size": 100}}}}})
     return [{"year": y["key"], "competencies": [{"competency": c["key"], "count": c["doc_count"]} for c in y["competencies"]["buckets"]]} for y in r["aggregations"]["years"]["buckets"]]
+
+
+def analytics_search(**kwargs):
+    try:
+        return es.search(index=INDEX, **kwargs)
+    except Exception as exc:
+        raise HTTPException(503, "Índice de busca indisponível") from exc
 
 
 def cart_key(user, session_id):
@@ -209,23 +227,25 @@ def cart_key(user, session_id):
 
 
 @app.post("/cart/{session_id}")
-def add_cart(session_id: str, payload: CartPayload, authorization: Optional[str] = Header(None)):
+def add_cart(session_id: str, payload: CartPayload, authorization: Optional[str] = Depends(authorization_header)):
     user = user_from_header(authorization, required=True)
-    try: es.exists(index=INDEX, id=payload.question_id)
+    try: exists = es.exists(index=INDEX, id=payload.question_id)
     except Exception as exc: raise HTTPException(503, "Índice indisponível") from exc
+    if not exists:
+        raise HTTPException(404, "Questão não encontrada")
     key = cart_key(user, session_id)
     redis.sadd(key, payload.question_id); redis.expire(key, 86400)
     return {"session_id": session_id, "items": sorted(redis.smembers(key))}
 
 
 @app.get("/cart/{session_id}")
-def get_cart(session_id: str, authorization: Optional[str] = Header(None)):
+def get_cart(session_id: str, authorization: Optional[str] = Depends(authorization_header)):
     user = user_from_header(authorization, required=True)
     return {"session_id": session_id, "items": sorted(redis.smembers(cart_key(user, session_id)))}
 
 
 @app.delete("/cart/{session_id}/{question_id}")
-def remove_cart(session_id: str, question_id: str, authorization: Optional[str] = Header(None)):
+def remove_cart(session_id: str, question_id: str, authorization: Optional[str] = Depends(authorization_header)):
     user = user_from_header(authorization, required=True)
     key = cart_key(user, session_id); redis.srem(key, question_id)
     return {"items": sorted(redis.smembers(key))}
@@ -245,14 +265,14 @@ def selected_documents(user, session_id):
 
 
 @app.get("/cart/{session_id}/export.json")
-def export_json(session_id: str, authorization: Optional[str] = Header(None)):
+def export_json(session_id: str, authorization: Optional[str] = Depends(authorization_header)):
     user = user_from_header(authorization, required=True)
     if user["role"] != "PROFESSOR": raise HTTPException(403, "Exportação restrita a professores")
     return {"format": "enade-question-set-v1", "questions": selected_documents(user, session_id)}
 
 
 @app.get("/cart/{session_id}/export.pdf")
-def export_pdf(session_id: str, authorization: Optional[str] = Header(None)):
+def export_pdf(session_id: str, authorization: Optional[str] = Depends(authorization_header)):
     user = user_from_header(authorization, required=True)
     if user["role"] != "PROFESSOR": raise HTTPException(403, "Exportação restrita a professores")
     docs = selected_documents(user, session_id)
@@ -276,7 +296,7 @@ def export_pdf(session_id: str, authorization: Optional[str] = Header(None)):
 
 
 @app.post("/admin/cache/invalidate")
-def cache_invalidate(authorization: Optional[str] = Header(None)):
+def cache_invalidate(authorization: Optional[str] = Depends(authorization_header)):
     professor(authorization)
     invalidate_search_cache()
     return {"status": "invalidated"}

@@ -33,10 +33,13 @@ def ensure_index():
 
     es.indices.create(
         index=INDEX,
-        settings={"analysis": {"filter": {"enade_synonyms": {
+        settings={"analysis": {"filter": {
+            "brazilian_stop": {"type": "stop", "stopwords": "_brazilian_"},
+            "brazilian_stemmer": {"type": "stemmer", "language": "brazilian"},
+            "enade_synonyms": {
             "type": "synonym", "synonyms": ["tecnologia da informação, TI", "inteligência artificial, IA",
                 "segurança da informação, cibersegurança", "sistema de informação, sistemas de informação"]}},
-            "analyzer": {"ptbr_enade": {"tokenizer": "standard", "filter": ["lowercase", "brazilian_stop", "brazilian_stemmer", "enade_synonyms"]}}}},
+            "analyzer": {"ptbr_enade": {"tokenizer": "standard", "filter": ["lowercase", "enade_synonyms", "brazilian_stop", "brazilian_stemmer"]}}}},
         mappings={"properties": {
             "id": {"type": "keyword"}, "statement": {"type": "text", "analyzer": "ptbr_enade"},
             "alternatives": {"type": "text", "analyzer": "ptbr_enade"},

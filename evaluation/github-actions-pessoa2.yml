@@ -1,0 +1,55 @@
+# Modelo: copiar pelo site do GitHub para .github/workflows/pessoa2.yml
+# na mesma branch do PR. O evento pull_request inicia a validação.
+name: Validar entrega da pessoa 2
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "infra/**"
+      - "frontend/**"
+      - "tests/**"
+      - "evaluation/**"
+      - "docker-compose.yml"
+      - ".github/workflows/pessoa2.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  laboratorio:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      EVAL_FRESH_RESULTS: "1"
+      EVAL_ES_JAVA_OPTS: -Xms512m -Xmx512m -XX:ActiveProcessorCount=2 -Djava.security.krb5.conf=/usr/share/elasticsearch/config/krb5.conf
+      EVAL_KAFKA_HEAP_OPTS: -Xms128m -Xmx256m
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Construir e coletar evidências reais
+        run: |
+          bash evaluation/run_lab.sh
+          docker info --format '{{json .MemTotal}}' > entrega_pessoa_2/memoria_docker_bytes.json
+      - name: Validar frontend no Chromium e gerar DOCX
+        run: |
+          docker build -f evaluation/Dockerfile.evidence -t enade-evidence-tools:local .
+          python3 -m evaluation.run_ci_browser
+          docker compose --env-file .env.evaluation -f docker-compose.yml \
+            -f evaluation/compose.lab.yml exec -T api python -m evaluation.verify_delivery
+      - name: Disponibilizar resultados sem credenciais
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: entrega-pessoa-2
+          path: entrega_pessoa_2/
+          retention-days: 14
+      - name: Diagnóstico técnico dos serviços
+        if: failure()
+        run: python3 -m evaluation.ci_diagnostics
+      - name: Encerrar laboratório sem remover os dados
+        if: always()
+        run: docker compose --env-file .env.evaluation -f docker-compose.yml -f evaluation/compose.lab.yml stop

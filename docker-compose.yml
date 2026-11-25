@@ -31,11 +31,10 @@ services:
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,SASL_PLAINTEXT:SASL_PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: SASL_PLAINTEXT
-      KAFKA_SECURITY_INTER_BROKER_PROTOCOL: SASL_PLAINTEXT
       KAFKA_SASL_ENABLED_MECHANISMS: GSSAPI
       KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: GSSAPI
       KAFKA_SASL_KERBEROS_SERVICE_NAME: kafka
-      KAFKA_LISTENER_NAME_SASL_PLAINTEXT_GSSAPI_SASL_JAAS_CONFIG: com.sun.security.auth.module.Krb5LoginModule required useKeyTab=true storeKey=true doNotPrompt=true keyTab="/etc/security/keytabs/kafka.keytab" principal="kafka/kafka@ENADE.LOCAL";
+      KAFKA_LISTENER_NAME_SASL__PLAINTEXT_GSSAPI_SASL_JAAS_CONFIG: com.sun.security.auth.module.Krb5LoginModule required useKeyTab=true storeKey=true doNotPrompt=true keyTab="/etc/security/keytabs/kafka.keytab" principal="kafka/kafka@ENADE.LOCAL";
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
@@ -55,6 +54,8 @@ services:
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.14.3
+    depends_on:
+      kerberos: {condition: service_healthy}
     environment:
       discovery.type: single-node
       xpack.security.enabled: "true"
@@ -67,19 +68,19 @@ services:
       xpack.security.transport.ssl.certificate: certs/elasticsearch.crt
       xpack.security.authc.token.enabled: "true"
       xpack.security.authc.realms.kerberos.kerb1.order: "0"
-      xpack.security.authc.realms.kerberos.kerb1.keytab.path: /etc/security/keytabs/elasticsearch-http.keytab
+      xpack.security.authc.realms.kerberos.kerb1.keytab.path: keytabs/elasticsearch-http.keytab
       xpack.security.authc.realms.kerberos.kerb1.remove_realm_name: "true"
       xpack.security.authc.realms.file.file1.order: "1"
-      ES_JAVA_OPTS: -Xms512m -Xmx512m -Djava.security.krb5.conf=/etc/krb5.conf
+      ES_JAVA_OPTS: -Xms512m -Xmx512m -Djava.security.krb5.conf=/usr/share/elasticsearch/config/krb5.conf
     volumes:
       - es_data:/usr/share/elasticsearch/data
-      - elasticsearch_keytab:/etc/security/keytabs:ro
+      - elasticsearch_keytab:/usr/share/elasticsearch/config/keytabs:ro
       - elasticsearch_certs:/usr/share/elasticsearch/config/certs:ro
       - ./infra/kerberos/roles.yml:/usr/share/elasticsearch/config/roles.yml:ro
       - ./infra/kerberos/role_mapping.yml:/usr/share/elasticsearch/config/role_mapping.yml:ro
-      - ./infra/kerberos/krb5.conf:/etc/krb5.conf:ro
+      - ./infra/kerberos/krb5.conf:/usr/share/elasticsearch/config/krb5.conf:ro
     healthcheck:
-      test: ["CMD-SHELL", "code=$(curl -sk -o /dev/null -w '%{http_code}' https://localhost:9200/); [ \"$code\" = 401 ] || [ \"$code\" = 200 ]"]
+      test: ["CMD-SHELL", "code=$$(curl -sk -o /dev/null -w '%{http_code}' https://localhost:9200/); [ \"$$code\" = 401 ] || [ \"$$code\" = 200 ]"]
       interval: 10s
       timeout: 5s
       retries: 30
