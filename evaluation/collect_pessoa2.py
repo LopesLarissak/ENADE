@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import secrets
 import subprocess
 import time
@@ -122,11 +123,24 @@ def kerberos(mode, service="all"):
             and evidence["kafka_gssapi"].get("brokers", 0) > 0
             and (service == "all" or evidence["etapa_kafka_anterior"]["resultado"] == "APROVADO")
         ) else "FALHOU"
+        if service == "all":
+            write_json(f"kerberos_{mode}_kafka.json", {
+                "principal_esperado": evidence["principal_esperado"], "modo": mode,
+                "coleta_utc": evidence["coleta_utc"], "etapa": "kafka",
+                "kafka_gssapi": evidence["kafka_gssapi"], "klist": evidence["klist"],
+                "resultado": "APROVADO" if evidence["kafka_gssapi"]["brokers"] > 0 else "FALHOU",
+            })
     except Exception as exc:
         # Exceções podem carregar URLs de infraestrutura; não incluir valores de configuração.
         evidence["resultado"] = "BLOQUEADO"
         evidence["erro_tipo"] = type(exc).__name__
     write_json(f"kerberos_{mode}.json", evidence)
+    if mode == "worker" and evidence["resultado"] == "APROVADO":
+        api_file = OUT / "kerberos_api.json"
+        if api_file.exists():
+            api_evidence = json.loads(api_file.read_text())
+            if api_evidence.get("resultado") == "APROVADO":
+                text_report("teste_kerberos.txt", [api_evidence, evidence])
     print(f"Kerberos {mode}: {evidence['resultado']}")
     return evidence
 
@@ -158,6 +172,7 @@ def collect(iterations):
     check("LDAP rejeita login inválido e injeção", invalid == injected == 401,
           {"login_invalido": invalid, "filtro_escapado": injected})
     text_report("teste_ldap.txt", identities + [{"login_invalido_http": invalid, "injecao_http": injected}])
+    write_json("autenticacao_validada.json", identities)
 
     code, found, _ = request("/questions?" + urllib.parse.urlencode({"q": "tecnologia", "size": 5}), student)
     check("02 Busca textual", code == 200 and found["total"] >= 1, {"http": code, "total": found.get("total")})
@@ -269,6 +284,19 @@ def collect(iterations):
     write_json("verificacoes.json", RESULTS)
     if any(row["resultado"] != "APROVADO" for row in RESULTS):
         raise SystemExit(1)
+    snapshot = redis.info("stats")
+    write_json("redis_snapshot.json", {
+        "coleta_utc": datetime.now(timezone.utc).isoformat(),
+        "escopo": "contadores globais da instância Redis no instante da coleta",
+        "ping": redis.ping(), "keyspace_hits": snapshot["keyspace_hits"],
+        "keyspace_misses": snapshot["keyspace_misses"], "chaves": redis.dbsize(),
+    })
+    unit = re.search(r"(\d+) passed", (OUT / "pytest.txt").read_text())
+    write_json("validacoes_incluidas.json", {
+        "escopo": "cenários aprovados da execução corrente",
+        "testes_unitarios_aprovados": int(unit.group(1)) if unit else None,
+        "verificacoes": RESULTS,
+    })
 
 
 def persistence():

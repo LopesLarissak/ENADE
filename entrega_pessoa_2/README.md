@@ -72,6 +72,14 @@ docker run --rm -e EVAL_SOURCE_COMMIT="$(git rev-parse HEAD)" \
 
 As evidências Kafka têm o horário e o principal de cada coleta. O modelo
 opcional de GitHub Actions fica em `evaluation/github-actions-pessoa2.yml`.
+Para ativá-lo pelo site do GitHub, copie seu conteúdo para
+`.github/workflows/pessoa2.yml` na branch `entrega/pessoa-2-api-busca-seguranca`.
+O evento do PR inicia a execução. Esse modelo usa heap de 512 MiB no
+Elasticsearch e 256 MiB no Kafka, preserva os arquivos versionados fora da pasta
+da nova coleta e publica somente artefatos da execução corrente aprovada.
+Mensagens de erro do navegador passam por remoção de credenciais antes de
+aparecerem nos logs. Credenciais de laboratório são geradas automaticamente:
+não é necessário cadastrar senhas ou tokens nos secrets do Actions para esse fluxo.
 
 ## Revisão
 

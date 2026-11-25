@@ -44,9 +44,23 @@ def main():
     count = re.search(r"(\d+) passed", (OUT / "pytest.txt").read_text())
     p(f"A suíte registrou {count.group(1) if count else 'os'} testes unitários aprovados. Os testes exercitam autenticação, autorização, filtros, paginação, highlight, separação do cache por perfil, chaves do carrinho, validação de IDs e tratamento HTTP de indisponibilidade usando doubles. pytest.txt registra o resultado e os avisos das dependências.")
     p("O build de produção React/Vite foi executado e registrado em frontend_build.txt. No Chromium, o frontend confirmou a identidade em /auth/me e manteve o perfil do servidor após tentativa de alterar o perfil no localStorage. As capturas usam o build React real com proxy para a API.")
+    metrics_file = OUT / "redis_metricas.csv"
+    metrics = list(csv.DictReader(metrics_file.open())) if metrics_file.exists() else []
+    if metrics:
+        document.add_heading("Busca e medições da execução", 2)
+        p("As respostas e cenários da busca estão em resultado_busca.json e busca_cenarios.json. "
+          "As questões do laboratório são fixtures sintéticas identificadas no seed. "
+          "O teste interdisciplinar recupera o mesmo tema textual entre áreas.")
+        p("Medição sequencial com um cliente na rede Docker. Cold invalida o cache Redis antes de cada "
+          "consulta; warm usa uma consulta previamente aquecida. O tempo inclui a resposta HTTP e sua leitura; "
+          "percentis usam interpolação linear. As condições e amostras constam dos CSVs.")
+        table(document, ["Modo", "n", "p50 ms", "p95 ms", "p99 ms", "Erros"],
+              [(row["modo"], row["amostras"], row["p50_ms"], row["p95_ms"],
+                row["p99_ms"], row["erros_http"]) for row in metrics])
     document.add_heading("6. Cache e sessão", 1)
     snapshot = read_json("redis_snapshot.json")
-    p("A instância Redis respondeu ao PING. O snapshot abaixo registra contadores globais no instante da coleta. O cenário HTTP documentado em teste_carrinho.txt é a leitura de carrinho vazio por estudante e professor autenticados.")
+    p("A instância Redis respondeu ao PING. O snapshot abaixo registra contadores globais no instante da coleta. "
+      "teste_carrinho.txt preserva os cenários HTTP exercitados com usuários autenticados.")
     table(document, ["Observação", "Valor"], [
         ("Coleta UTC", snapshot["coleta_utc"]), ("PING", snapshot["ping"]),
         ("keyspace_hits global", snapshot["keyspace_hits"]),
@@ -54,7 +68,14 @@ def main():
         ("Chaves no instante da coleta", snapshot["chaves"]),
     ])
     p("A API utiliza namespace de carrinho por usuário e session_id. O teste unitário confirma chaves distintas para usuários distintos. O teste de questão inexistente confirma a rejeição antes de gravar o ID no Redis.")
-    p("No cenário de exportação de carrinho vazio, professor recebeu HTTP 200 em JSON e PDF e estudante recebeu HTTP 403. teste_exportacao.txt identifica o cenário; exportacao_vazia.json e exportacao_vazia.pdf preservam os arquivos retornados pela API.")
+    if metrics:
+        p("O hit rate foi obtido pelos deltas de INFO stats em cada série de busca, em laboratório isolado: "
+          "hits / (hits + misses). São contadores globais; em produção com outros clientes o escopo muda.")
+        table(document, ["Modo", "Hits", "Misses", "Hit rate"],
+              [(row["modo"], row["hits"], row["misses"], row["hit_rate"]) for row in metrics])
+    p("teste_exportacao.txt identifica as respostas e o cenário exercitado em JSON/PDF. Os arquivos "
+      "exportacao_vazia.* identificam listas vazias; exportacao.json e exportacao.pdf identificam as questões "
+      "selecionadas quando presentes nesta coleta.")
     document.add_heading("7. Segurança LDAP e Kerberos", 1)
     p("As contas de laboratório estudante e professor foram autenticadas no OpenLDAP real. GET /auth/me retornou as identidades e os perfis ESTUDANTE e PROFESSOR. Um login inválido recebeu HTTP 401; uma rota restrita sem login retornou 401; o estudante autenticado recebeu HTTP 403 em /analytics/courses.")
     p("No login, a implementação faz bind de serviço para localizar a identidade, bind com o DN do usuário e consulta dos grupos LDAP para determinar o perfil. O frontend confirma a identidade no servidor e remove dados de exibição ao sair. As capturas combinam identidade/perfil e resposta de controle de acesso.")
@@ -62,6 +83,12 @@ def main():
     table(document, ["Principal", "Serviço", "Resultado"],
           [(record["principal_esperado"], "Kafka SASL/GSSAPI", record["resultado"]) for record in kafka])
     p("API e worker obtiveram metadados do broker Kafka por clientes configurados para SASL/GSSAPI. Os registros incluem a hora da coleta, o principal e klist, além do resultado da chamada real. A evidência não se limita à presença de um ticket. As coletas de cada principal têm seus próprios horários.")
+    elastic = [read_json(f"kerberos_{mode}.json") for mode in ["api", "worker"]
+               if (OUT / f"kerberos_{mode}.json").exists()]
+    if elastic and all(record.get("resultado") == "APROVADO" for record in elastic):
+        p("Os registros Kerberos também confirmam a identidade devolvida por /_security/_authenticate "
+          "no Elasticsearch, via SPNEGO com autenticação mútua e validação da CA. Eles preservam a recusa "
+          "da requisição anônima e a proteção de escrita do principal da API.")
     p("LDAP autentica as pessoas; o JWT emitido pela API permite identificar usuário e perfil nas requisições seguintes. Kerberos autentica API e worker ao acessarem Kafka. Os registros excluem senhas, JWTs, conteúdo de keytabs e tickets.")
     for filename, caption in [
         ("prints_swagger/03_identidade_estudante.png", "Identidade e perfil do estudante retornados pela API."),

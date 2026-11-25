@@ -1,5 +1,5 @@
-# MODELO INATIVO. Para habilitar, um mantenedor deve copiar este arquivo para
-# .github/workflows/pessoa2.yml com uma conexão que possua permissão workflow.
+# Modelo: copiar pelo site do GitHub para .github/workflows/pessoa2.yml
+# na mesma branch do PR. O evento pull_request inicia a validação.
 name: Validar entrega da pessoa 2
 
 on:
@@ -22,6 +22,10 @@ jobs:
   laboratorio:
     runs-on: ubuntu-24.04
     timeout-minutes: 35
+    env:
+      EVAL_FRESH_RESULTS: "1"
+      EVAL_ES_JAVA_OPTS: -Xms512m -Xmx512m -XX:ActiveProcessorCount=2 -Djava.security.krb5.conf=/usr/share/elasticsearch/config/krb5.conf
+      EVAL_KAFKA_HEAP_OPTS: -Xms128m -Xmx256m
     steps:
       - uses: actions/checkout@v4
         with:
@@ -33,19 +37,19 @@ jobs:
       - name: Validar frontend no Chromium e gerar DOCX
         run: |
           docker build -f evaluation/Dockerfile.evidence -t enade-evidence-tools:local .
-          docker run --rm --network enade-plataforma_default \
-            --env-file .env.evaluation \
-            -e EVAL_SOURCE_COMMIT="$GITHUB_SHA" \
-            -e EVAL_ENVIRONMENT="GitHub Actions ubuntu-24.04, Docker" \
-            -v "$PWD:/app" -w /app enade-evidence-tools:local \
-            sh -c 'python -m evaluation.capture_pessoa2 && python -m evaluation.report_pessoa2'
+          python3 -m evaluation.run_ci_browser
+          docker compose --env-file .env.evaluation -f docker-compose.yml \
+            -f evaluation/compose.lab.yml exec -T api python -m evaluation.verify_delivery
       - name: Disponibilizar resultados sem credenciais
-        if: always()
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: entrega-pessoa-2
           path: entrega_pessoa_2/
           retention-days: 14
+      - name: Diagnóstico técnico dos serviços
+        if: failure()
+        run: python3 -m evaluation.ci_diagnostics
       - name: Encerrar laboratório sem remover os dados
         if: always()
         run: docker compose --env-file .env.evaluation -f docker-compose.yml -f evaluation/compose.lab.yml stop

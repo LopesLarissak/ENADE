@@ -35,7 +35,8 @@ def main():
         ElementTree.fromstring(document)
         assert b"Kafka" in document
         extra_text = [document]
-    pdf = fitz.open(OUT / "exportacao_vazia.pdf")
+    pdf_path = OUT / "exportacao.pdf"
+    pdf = fitz.open(pdf_path if pdf_path.exists() else OUT / "exportacao_vazia.pdf")
     assert len(pdf) >= 1
     pdf.close()
     values = [os.environ[name].encode() for name in [

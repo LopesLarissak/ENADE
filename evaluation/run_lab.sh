@@ -7,14 +7,19 @@ if [ ! -f .env.evaluation ]; then
   docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/app" -w /app \
     python:3.11-slim python evaluation/prepare_lab.py
 fi
+if [ "${EVAL_FRESH_RESULTS:-0}" = 1 ] && [ -d entrega_pessoa_2 ]; then
+  backup="$(mktemp -d .evaluation-private/evidencias-base.XXXXXX)"
+  mv entrega_pessoa_2 "$backup/entrega_pessoa_2"
+fi
 mkdir -p entrega_pessoa_2
 "${compose[@]}" config --quiet
 "${compose[@]}" build api worker kerberos
+"${compose[@]}" run -T --rm --no-deps frontend sh -c 'npm ci && npm run build' \
+  > entrega_pessoa_2/frontend_build.txt 2>&1
 "${compose[@]}" up -d --no-build kerberos kafka elasticsearch redis openldap api frontend
 "${compose[@]}" run -T --rm --no-deps worker \
   /app/scripts/with_kerberos.sh python -m evaluation.seed_lab --allow-synthetic
 "${compose[@]}" exec -T api python -m pytest -q > entrega_pessoa_2/pytest.txt
-"${compose[@]}" exec -T frontend npm run build > entrega_pessoa_2/frontend_build.txt
 "${compose[@]}" exec -T api python -m evaluation.collect_pessoa2 --iterations 100
 "${compose[@]}" run -T --rm --no-deps worker \
   /app/scripts/with_kerberos.sh python -m evaluation.collect_pessoa2 --kerberos worker
