@@ -17,6 +17,7 @@ mkdir -p entrega_pessoa_2
 "${compose[@]}" run -T --rm --no-deps frontend sh -c 'npm ci && npm run build' \
   > entrega_pessoa_2/frontend_build.txt 2>&1
 "${compose[@]}" up -d --no-build kerberos kafka elasticsearch redis openldap api frontend
+"${compose[@]}" exec -T elasticsearch bash -s < infra/kerberos/es-role-mappings.sh
 "${compose[@]}" run -T --rm --no-deps worker \
   /app/scripts/with_kerberos.sh python -m evaluation.seed_lab --allow-synthetic
 "${compose[@]}" exec -T api python -m pytest -q > entrega_pessoa_2/pytest.txt

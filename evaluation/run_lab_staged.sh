@@ -34,6 +34,7 @@ else:
   /app/scripts/with_kerberos.sh python -m evaluation.collect_pessoa2 --kerberos worker --kerberos-service kafka
 "${compose[@]}" stop kafka
 "${compose[@]}" up -d --no-deps --wait --wait-timeout 600 elasticsearch
+"${compose[@]}" exec -T elasticsearch bash -s < infra/kerberos/es-role-mappings.sh
 "${compose[@]}" run -T --rm --no-deps worker \
   /app/scripts/with_kerberos.sh python -m evaluation.seed_lab --allow-synthetic
 "${compose[@]}" exec -T -e EVAL_KERBEROS_SERVICES=elasticsearch api \

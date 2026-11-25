@@ -17,7 +17,7 @@ def redact(text, values):
 
 def secret_values():
     keys = {"API_SECRET", "REDIS_PASSWORD", "LDAP_PASSWORD", "KRB5_KDC_MASTER_PASSWORD",
-            "EVAL_STUDENT_PASSWORD", "EVAL_TEACHER_PASSWORD"}
+            "EVAL_STUDENT_PASSWORD", "EVAL_TEACHER_PASSWORD", "ELASTIC_PASSWORD"}
     path = Path(".env.evaluation")
     if not path.exists():
         return []

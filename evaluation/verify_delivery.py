@@ -41,7 +41,7 @@ def main():
     pdf.close()
     values = [os.environ[name].encode() for name in [
         "API_SECRET", "REDIS_PASSWORD", "LDAP_PASSWORD", "KRB5_KDC_MASTER_PASSWORD",
-        "EVAL_STUDENT_PASSWORD", "EVAL_TEACHER_PASSWORD"] if os.environ.get(name)]
+        "EVAL_STUDENT_PASSWORD", "EVAL_TEACHER_PASSWORD", "ELASTIC_PASSWORD"] if os.environ.get(name)]
     jwt_pattern = re.compile(rb"eyJ[A-Za-z0-9_-]{12,}\.[A-Za-z0-9_-]{12,}\.[A-Za-z0-9_-]{12,}")
     for path in OUT.rglob("*"):
         if not path.is_file():

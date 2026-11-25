@@ -19,6 +19,7 @@ def main():
         "KRB5_KDC_MASTER_PASSWORD": secrets.token_hex(24),
         "EVAL_STUDENT_PASSWORD": secrets.token_hex(20),
         "EVAL_TEACHER_PASSWORD": secrets.token_hex(20),
+        "ELASTIC_PASSWORD": secrets.token_hex(24),
     }
     ldif = (root / "infra/ldap/01-base.ldif").read_text()
     replacements = iter([values["EVAL_STUDENT_PASSWORD"], values["EVAL_TEACHER_PASSWORD"]])
