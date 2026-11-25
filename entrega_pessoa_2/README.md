@@ -44,6 +44,11 @@ de outro ENADE com os mesmos nomes de containers ou portas.
 bash evaluation/run_lab.sh
 ```
 
+Para separar Kafka e Elasticsearch em etapas, o equivalente completo é:
+`bash evaluation/run_lab_staged.sh`. Mesmo assim, Elasticsearch + Chromium
+podem exceder a memória de ambientes muito pequenos. Os registros Kerberos
+indicam o horário de cada etapa; não implicam execução simultânea.
+
 O script cria `.env.evaluation` e `.evaluation-private/` ignorados pelo Git.
 As credenciais são aleatórias e não são impressas. O LDIF de laboratório não
 reutiliza as senhas de exemplo do repositório. A licença Elasticsearch `trial`
@@ -102,6 +107,8 @@ O manifesto contém hashes; alterações posteriores exigem sua regeneração.
 - **Kerberos real:** `_security/_authenticate` identifica o principal do
   Elasticsearch; a requisição SPNEGO exige autenticação mútua e CA válida;
   Kafka fornece metadados via SASL/GSSAPI. `klist` sozinho não seria prova.
+  Na execução em etapas, a autenticação de cada serviço é independente e
+  possui seu próprio horário de coleta.
 - **Segurança de laboratório:** LDAP sem TLS, Kafka `SASL_PLAINTEXT`, keytabs
   compartilhados entre containers confiáveis e JWT em localStorage são
   limitações declaradas. Redis e LDAP **não** são apresentados como serviços

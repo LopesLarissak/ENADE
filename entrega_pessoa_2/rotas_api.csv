@@ -1,0 +1,15 @@
+metodo,rota,operation_id,parametros
+GET,/health,health_health_get,
+POST,/auth/login,login_auth_login_post,
+GET,/auth/me,me_auth_me_get,authorization
+GET,/questions,search_questions_questions_get,q;area;course;year;exam_type;question_type;competency;annulled;page;size;authorization
+GET,/questions/{question_id},get_question_questions__question_id__get,question_id;authorization
+GET,/analytics/courses,analytics_courses_analytics_courses_get,authorization
+GET,/analytics/competencies,analytics_competencies_analytics_competencies_get,authorization
+GET,/analytics/competencies/timeline,competency_timeline_analytics_competencies_timeline_get,authorization
+POST,/cart/{session_id},add_cart_cart__session_id__post,session_id;authorization
+GET,/cart/{session_id},get_cart_cart__session_id__get,session_id;authorization
+DELETE,/cart/{session_id}/{question_id},remove_cart_cart__session_id___question_id__delete,session_id;question_id;authorization
+GET,/cart/{session_id}/export.json,export_json_cart__session_id__export_json_get,session_id;authorization
+GET,/cart/{session_id}/export.pdf,export_pdf_cart__session_id__export_pdf_get,session_id;authorization
+POST,/admin/cache/invalidate,cache_invalidate_admin_cache_invalidate_post,authorization

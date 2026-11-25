@@ -27,7 +27,7 @@ def write_json(name, value):
 
 def csv_file(name, rows, fields=None):
     with (OUT / name).open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fields or list(rows[0]))
+        writer = csv.DictWriter(handle, fieldnames=fields or list(rows[0]), lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 
@@ -73,12 +73,25 @@ def text_report(name, records):
     )
 
 
-def kerberos(mode):
+def kerberos(mode, service="all"):
     from app.kerberos_elasticsearch import KerberosElasticsearch
     from app.kafka_security import kafka_client_config
     from confluent_kafka.admin import AdminClient
     import requests
-    evidence = {"principal_esperado": os.environ["KRB5_PRINCIPAL"], "modo": mode}
+    evidence = {"principal_esperado": os.environ["KRB5_PRINCIPAL"], "modo": mode,
+                "coleta_utc": datetime.now(timezone.utc).isoformat(), "etapa": service}
+    if service == "kafka":
+        try:
+            metadata = AdminClient(kafka_client_config()).list_topics(timeout=30)
+            evidence["kafka_gssapi"] = {"brokers": len(metadata.brokers), "topics": sorted(metadata.topics)}
+            evidence["klist"] = subprocess.run(["klist"], capture_output=True, text=True, check=True).stdout
+            evidence["resultado"] = "APROVADO" if metadata.brokers else "FALHOU"
+        except Exception as exc:
+            evidence["resultado"] = "BLOQUEADO"
+            evidence["erro_tipo"] = type(exc).__name__
+        write_json(f"kerberos_{mode}_kafka.json", evidence)
+        print(f"Kerberos {mode}/Kafka: {evidence['resultado']}")
+        return evidence
     client = KerberosElasticsearch()
     try:
         evidence["identidade_elasticsearch"] = client._request("GET", "/_security/_authenticate").json()
@@ -93,14 +106,19 @@ def kerberos(mode):
                 evidence["escrita_api_http"] = "ERRO: permitida"
             except ElasticsearchHTTPError as exc:
                 evidence["escrita_api_http"] = exc.status_code
-        metadata = AdminClient(kafka_client_config()).list_topics(timeout=15)
-        evidence["kafka_gssapi"] = {"brokers": len(metadata.brokers), "topics": sorted(metadata.topics)}
+        if service == "all":
+            metadata = AdminClient(kafka_client_config()).list_topics(timeout=30)
+            evidence["kafka_gssapi"] = {"brokers": len(metadata.brokers), "topics": sorted(metadata.topics)}
+        else:
+            evidence["etapa_kafka_anterior"] = json.loads((OUT / f"kerberos_{mode}_kafka.json").read_text())
+            evidence["kafka_gssapi"] = evidence["etapa_kafka_anterior"].get("kafka_gssapi", {})
         evidence["klist"] = subprocess.run(["klist"], capture_output=True, text=True, check=True).stdout
         evidence["resultado"] = "APROVADO" if (
             evidence["identidade_elasticsearch"]["username"] == mode + "/" + mode
             and anonymous.status_code == 401
             and (mode != "api" or evidence["escrita_api_http"] == 403)
-            and len(metadata.brokers) > 0
+            and evidence["kafka_gssapi"].get("brokers", 0) > 0
+            and (service == "all" or evidence["etapa_kafka_anterior"]["resultado"] == "APROVADO")
         ) else "FALHOU"
     except Exception as exc:
         # Exceções podem carregar URLs de infraestrutura; não incluir valores de configuração.
@@ -243,7 +261,7 @@ def collect(iterations):
           {"resumo": metrics, "metodo": "sequencial, 1 cliente, RTT HTTP interno, 18 fixtures; não produção"})
     check("07 Hit rate Redis", metrics[1]["hits"] > 0 and metrics[0]["misses"] > 0,
           {"fonte": "delta INFO stats; laboratório sem tráfego concorrente", "resumo": metrics})
-    evidence = kerberos("api")
+    evidence = kerberos("api", os.getenv("EVAL_KERBEROS_SERVICES", "all"))
     check("13 Kerberos real da API", evidence["resultado"] == "APROVADO",
           {"arquivo": "kerberos_api.json", "resultado": evidence["resultado"]})
     write_json("verificacoes.json", RESULTS)
@@ -264,16 +282,56 @@ def persistence():
     print("Carrinho preservado após reinício real do Redis.")
 
 
+def auth_only():
+    """Evidência parcial independente do índice. Não aprova os demais testes."""
+    status, schema, _ = request("/openapi.json")
+    if status != 200:
+        raise SystemExit("OpenAPI indisponível.")
+    csv_file("rotas_api.csv", [
+        {"metodo": method.upper(), "rota": path, "operation_id": operation["operationId"],
+         "parametros": ";".join(p["name"] for p in operation.get("parameters", []))}
+        for path, methods in schema["paths"].items() for method, operation in methods.items()
+        if method in {"get", "post", "delete", "put", "patch"}
+    ])
+    write_json("openapi.json", schema)
+    records = []
+    for username, role, key in [("estudante", "ESTUDANTE", "EVAL_STUDENT_PASSWORD"),
+                                 ("professor", "PROFESSOR", "EVAL_TEACHER_PASSWORD")]:
+        bearer = login(username, key)
+        code, identity, _ = request("/auth/me", bearer)
+        assert code == 200 and identity == {"username": username, "role": role}
+        records.append({"endpoint": "/auth/me", "http": code, "identidade": identity})
+        if role == "ESTUDANTE":
+            denied, body, _ = request("/analytics/courses", bearer)
+            assert denied == 403
+            records.append({"endpoint": "/analytics/courses", "http": denied, "perfil": role, "resposta": body})
+    anonymous, _, _ = request("/analytics/courses")
+    assert anonymous == 401
+    invalid, _, _ = request("/auth/login", method="POST",
+                            data={"username": "estudante", "password": secrets.token_hex(24)})
+    assert invalid == 401
+    records.append({"sem_login_http": anonymous, "login_invalido_http": invalid})
+    text_report("teste_ldap.txt", records)
+    text_report("teste_perfis_403.txt", records + [
+        {"escopo": "parcial: não comprova professor consultando o índice; aguarda etapa Elasticsearch"}])
+    write_json("autenticacao_parcial.json", records)
+    print("LDAP real: identidades e perfis confirmados; estudante 403, sem login 401, login inválido 401.")
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--iterations", type=int, default=100)
     parser.add_argument("--kerberos", choices=["api", "worker"])
+    parser.add_argument("--kerberos-service", choices=["all", "kafka", "elasticsearch"], default="all")
+    parser.add_argument("--auth-only", action="store_true")
     parser.add_argument("--persistence", action="store_true")
     args = parser.parse_args()
     OUT.mkdir(exist_ok=True)
     if args.kerberos:
-        if kerberos(args.kerberos)["resultado"] != "APROVADO":
+        if kerberos(args.kerberos, args.kerberos_service)["resultado"] != "APROVADO":
             raise SystemExit(1)
+    elif args.auth_only:
+        auth_only()
     elif args.persistence:
         persistence()
     else:

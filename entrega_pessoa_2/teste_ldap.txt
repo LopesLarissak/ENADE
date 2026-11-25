@@ -1,0 +1,7 @@
+Coleta UTC: 2026-11-25T01:49:07.194659+00:00
+Ambiente: Docker Compose de laboratório, dados sintéticos, sem mocks.
+
+{"endpoint": "/auth/me", "http": 200, "identidade": {"username": "estudante", "role": "ESTUDANTE"}}
+{"endpoint": "/analytics/courses", "http": 403, "perfil": "ESTUDANTE", "resposta": {"detail": "Acesso restrito a professores"}}
+{"endpoint": "/auth/me", "http": 200, "identidade": {"username": "professor", "role": "PROFESSOR"}}
+{"sem_login_http": 401, "login_invalido_http": 401}

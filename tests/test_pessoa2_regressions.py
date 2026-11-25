@@ -29,6 +29,15 @@ def test_canonical_kerberos_import():
     assert KerberosElasticsearch is legacy
 
 
+def test_kafka_gssapi_config_includes_keytab(monkeypatch):
+    from app.kafka_security import kafka_client_config
+    monkeypatch.setenv("KRB5_KEYTAB", "/unit/worker.keytab")
+    monkeypatch.setenv("KRB5_PRINCIPAL", "worker/worker@ENADE.LOCAL")
+    config = kafka_client_config()
+    assert config["sasl.kerberos.keytab"] == "/unit/worker.keytab"
+    assert config["sasl.mechanism"] == "GSSAPI"
+
+
 def test_health_ldap_false_is_degraded(monkeypatch, client):
     monkeypatch.setattr(main, "es", SimpleNamespace(ping=lambda: True))
     monkeypatch.setattr(main, "redis", SimpleNamespace(ping=lambda: True))

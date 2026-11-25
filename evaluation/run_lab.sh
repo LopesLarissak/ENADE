@@ -11,12 +11,12 @@ mkdir -p entrega_pessoa_2
 "${compose[@]}" config --quiet
 "${compose[@]}" build api worker kerberos
 "${compose[@]}" up -d --no-build kerberos kafka elasticsearch redis openldap api frontend
-"${compose[@]}" run --rm --no-deps worker \
+"${compose[@]}" run -T --rm --no-deps worker \
   /app/scripts/with_kerberos.sh python -m evaluation.seed_lab --allow-synthetic
 "${compose[@]}" exec -T api python -m pytest -q > entrega_pessoa_2/pytest.txt
 "${compose[@]}" exec -T frontend npm run build > entrega_pessoa_2/frontend_build.txt
 "${compose[@]}" exec -T api python -m evaluation.collect_pessoa2 --iterations 100
-"${compose[@]}" run --rm --no-deps worker \
+"${compose[@]}" run -T --rm --no-deps worker \
   /app/scripts/with_kerberos.sh python -m evaluation.collect_pessoa2 --kerberos worker
 "${compose[@]}" restart redis
 "${compose[@]}" exec -T api python -c \
