@@ -4,7 +4,7 @@ set -euo pipefail
 : "${KRB5_KDC_MASTER_PASSWORD:?Defina KRB5_KDC_MASTER_PASSWORD no .env}"
 REALM="ENADE.LOCAL"
 mkdir -p /var/lib/krb5kdc /keytabs /es-keytab /certs
-chmod 0750 /keytabs
+chmod 0755 /keytabs
 
 if [ ! -f /var/lib/krb5kdc/principal ]; then
   kdb5_util create -s -P "$KRB5_KDC_MASTER_PASSWORD" -r "$REALM"
@@ -12,7 +12,8 @@ fi
 
 create_principal() {
   local principal="$1"
-  if ! kadmin.local -r "$REALM" -q "getprinc ${principal}" >/dev/null 2>&1; then
+  # kadmin.local pode retornar zero mesmo quando o principal não existe.
+  if ! kadmin.local -r "$REALM" -q "getprinc ${principal}" 2>/dev/null | grep -Fq "Principal: ${principal}"; then
     kadmin.local -r "$REALM" -q "addprinc -randkey -maxlife 10hours -maxrenewlife 7days ${principal}"
   fi
 }

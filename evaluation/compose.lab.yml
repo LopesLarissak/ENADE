@@ -1,0 +1,25 @@
+# Somente laboratório descartável; licença trial explícita, sem reduzir autenticação.
+# Use sempre: docker compose --env-file .env.evaluation -f docker-compose.yml
+#             -f evaluation/compose.lab.yml ...
+services:
+  kafka:
+    environment:
+      KAFKA_HEAP_OPTS: -Xms64m -Xmx128m
+      KAFKA_LOG_CLEANER_DEDUPE_BUFFER_SIZE: "16777216"
+      JAVA_TOOL_OPTIONS: -XX:ActiveProcessorCount=2
+  elasticsearch:
+    environment:
+      xpack.license.self_generated.type: trial
+      xpack.ml.enabled: "false"
+      node.processors: "1"
+      ES_JAVA_OPTS: -Xms128m -Xmx192m -XX:ActiveProcessorCount=2 -XX:MaxDirectMemorySize=64m -Djava.security.krb5.conf=/usr/share/elasticsearch/config/krb5.conf
+  openldap:
+    command: ["--copy-service"]
+    environment:
+      LDAP_ADMIN_PASSWORD: ${LDAP_PASSWORD:?Prepare o laboratório primeiro}
+    volumes:
+      - ./.evaluation-private/ldap:/container/service/slapd/assets/config/bootstrap/ldif/custom:ro
+  api:
+    env_file: !override [.env.evaluation]
+  worker:
+    env_file: !override [.env.evaluation]

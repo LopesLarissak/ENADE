@@ -1,0 +1,51 @@
+# MODELO INATIVO. Para habilitar, um mantenedor deve copiar este arquivo para
+# .github/workflows/pessoa2.yml com uma conexão que possua permissão workflow.
+name: Validar entrega da pessoa 2
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "infra/**"
+      - "frontend/**"
+      - "tests/**"
+      - "evaluation/**"
+      - "docker-compose.yml"
+      - ".github/workflows/pessoa2.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  laboratorio:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Construir e coletar evidências reais
+        run: |
+          bash evaluation/run_lab.sh
+          docker info --format '{{json .MemTotal}}' > entrega_pessoa_2/memoria_docker_bytes.json
+      - name: Validar frontend no Chromium e gerar DOCX
+        run: |
+          docker build -f evaluation/Dockerfile.evidence -t enade-evidence-tools:local .
+          docker run --rm --network enade-plataforma_default \
+            --env-file .env.evaluation \
+            -e EVAL_SOURCE_COMMIT="$GITHUB_SHA" \
+            -e EVAL_ENVIRONMENT="GitHub Actions ubuntu-24.04, Docker" \
+            -v "$PWD:/app" -w /app enade-evidence-tools:local \
+            sh -c 'python -m evaluation.capture_pessoa2 && python -m evaluation.report_pessoa2'
+      - name: Disponibilizar resultados sem credenciais
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: entrega-pessoa-2
+          path: entrega_pessoa_2/
+          retention-days: 14
+      - name: Encerrar laboratório sem remover os dados
+        if: always()
+        run: docker compose --env-file .env.evaluation -f docker-compose.yml -f evaluation/compose.lab.yml stop

@@ -99,7 +99,7 @@ def health():
     for name, fn in probes.items():
         try:
             result = fn()
-            checks[name] = bool(result) if name in ("elasticsearch", "redis") else True
+            checks[name] = bool(result) if name in ("elasticsearch", "redis", "ldap") else True
         except Exception as exc:
             checks[name] = False
             logger.warning("Healthcheck %s falhou: %s", name, exc)
@@ -211,8 +211,10 @@ def cart_key(user, session_id):
 @app.post("/cart/{session_id}")
 def add_cart(session_id: str, payload: CartPayload, authorization: Optional[str] = Header(None)):
     user = user_from_header(authorization, required=True)
-    try: es.exists(index=INDEX, id=payload.question_id)
+    try: exists = es.exists(index=INDEX, id=payload.question_id)
     except Exception as exc: raise HTTPException(503, "Índice indisponível") from exc
+    if not exists:
+        raise HTTPException(404, "Questão não encontrada")
     key = cart_key(user, session_id)
     redis.sadd(key, payload.question_id); redis.expire(key, 86400)
     return {"session_id": session_id, "items": sorted(redis.smembers(key))}

@@ -1,0 +1,4 @@
+FROM mcr.microsoft.com/playwright/python:v1.55.0-noble
+COPY evaluation/requirements-evidence.txt /tmp/requirements-evidence.txt
+RUN pip install --no-cache-dir -r /tmp/requirements-evidence.txt
+WORKDIR /app

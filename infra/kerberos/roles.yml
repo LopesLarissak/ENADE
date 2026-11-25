@@ -1,11 +1,11 @@
 enade_api_role:
-  cluster: []
+  cluster: ["cluster:monitor/main"]
   indices:
     - names: ["enade-questions"]
       privileges: ["read", "view_index_metadata"]
 
 enade_worker_role:
-  cluster: []
+  cluster: ["cluster:monitor/main"]
   indices:
     - names: ["enade-questions"]
       privileges: ["create_index", "index", "read", "view_index_metadata"]
