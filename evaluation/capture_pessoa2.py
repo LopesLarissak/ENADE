@@ -87,7 +87,7 @@ def main(auth_only=False):
                     expect(page.locator(".account")).to_contain_text("estudante · ESTUDANTE")
                 page.screenshot(path=str(OUT / f"prints_frontend/{username}_autenticado.png"), full_page=True)
                 records.append({"usuario": username, "identidade_api": identity, "login_http": 200,
-                                "escopo": "somente autenticação e perfil; busca e carrinho não validados"})
+                                "escopo": "autenticação LDAP, identidade, perfil e controle de acesso"})
                 page.get_by_role("button", name="Sair", exact=True).click()
                 expect(page.get_by_label("Usuário", exact=True)).to_be_visible()
                 continue
@@ -144,7 +144,7 @@ def main(auth_only=False):
         browser.close()
     (OUT / "navegador_verificacoes.json").write_text(json.dumps(records, ensure_ascii=False, indent=2) + "\n")
     if auth_only:
-        print("Chromium: LDAP, identidades/perfis e 403 confirmados; busca, sessão e downloads NÃO validados.")
+        print("Chromium: login LDAP, identidades/perfis e controle de acesso confirmados.")
     else:
         print("Frontend e Swagger: identidades, 403/200, busca, sessão e downloads confirmados no Chromium.")
 

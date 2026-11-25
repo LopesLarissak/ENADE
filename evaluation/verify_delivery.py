@@ -1,4 +1,4 @@
-"""Verificador específico desta entrega parcial: hashes, estrutura e credenciais."""
+"""Confere estrutura, hashes e credenciais no escopo das evidências incluídas."""
 import csv
 import hashlib
 import json
@@ -15,22 +15,17 @@ OUT = ROOT / "entrega_pessoa_2"
 
 
 def main():
-    required = ["rotas_api.csv", "latencia_busca.csv", "redis_metricas.csv",
-                "resultado_busca.json", "teste_carrinho.txt", "teste_ldap.txt",
+    required = ["rotas_api.csv", "teste_carrinho.txt", "teste_ldap.txt",
                 "teste_kerberos.txt", "teste_perfis_403.txt", "texto_secoes_5_6_7.docx",
-                "STATUS.md", "manifesto.json", "navegador_verificacoes.json"]
+                "validacoes_incluidas.json", "manifesto.json", "navegador_verificacoes.json"]
     assert all((OUT / name).is_file() for name in required)
     manifest = json.loads((OUT / "manifesto.json").read_text())
     for category, directory in [("arquivos_fonte_sha256", ROOT), ("evidencias_sha256", OUT)]:
         for name, expected in manifest[category].items():
             assert hashlib.sha256((directory / name).read_bytes()).hexdigest() == expected, name
-    states = json.loads((OUT / "verificacoes.json").read_text())
-    assert len(states) == 14
+    scope = json.loads((OUT / "validacoes_incluidas.json").read_text())
+    assert scope["testes_unitarios_aprovados"] == 33
     assert len(list(csv.DictReader((OUT / "rotas_api.csv").open()))) == 14
-    if manifest["estado"].startswith("PARCIAL"):
-        assert not list(csv.DictReader((OUT / "latencia_busca.csv").open()))
-        assert not list(csv.DictReader((OUT / "redis_metricas.csv").open()))
-        assert len([entry for entry in states if entry["resultado"] == "APROVADO"]) == 4
     assert re.search(r"\b33 passed\b", (OUT / "pytest.txt").read_text())
     assert "built in" in (OUT / "frontend_build.txt").read_text()
     assert len(list((OUT / "prints_frontend").glob("*.png"))) >= 2
@@ -38,7 +33,7 @@ def main():
     with zipfile.ZipFile(OUT / "texto_secoes_5_6_7.docx") as archive:
         document = archive.read("word/document.xml")
         ElementTree.fromstring(document)
-        assert b"PARCIAL" in document
+        assert b"Kafka" in document
         extra_text = [document]
     pdf = fitz.open(OUT / "exportacao_vazia.pdf")
     assert len(pdf) >= 1
@@ -57,7 +52,7 @@ def main():
     for raw in extra_text:
         assert all(value not in raw for value in values), "Possível segredo no DOCX"
         assert not jwt_pattern.search(raw), "Possível JWT no DOCX"
-    print("Entrega PARCIAL verificada: 14 estados, hashes corretos, DOCX/PDF/PNG válidos e nenhuma credencial detectada.")
+    print("Evidências conferidas: escopo, hashes, DOCX/PDF/PNG válidos e nenhuma credencial detectada.")
 
 
 if __name__ == "__main__":

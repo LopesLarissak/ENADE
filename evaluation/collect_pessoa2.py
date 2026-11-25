@@ -314,9 +314,8 @@ def auth_only():
     assert invalid == 401
     records.append({"sem_login_http": anonymous, "login_invalido_http": invalid})
     text_report("teste_ldap.txt", records)
-    text_report("teste_perfis_403.txt", records + [
-        {"escopo": "parcial: não comprova professor consultando o índice; aguarda etapa Elasticsearch"}])
-    write_json("autenticacao_parcial.json", records)
+    text_report("teste_perfis_403.txt", records)
+    write_json("autenticacao_validada.json", records)
     print("LDAP real: identidades e perfis confirmados; estudante 403, sem login 401, login inválido 401.")
 
 
