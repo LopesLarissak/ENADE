@@ -1,8 +1,8 @@
 {
-  "coleta_utc": "2026-11-25T02:12:59.494633+00:00",
-  "escopo": "snapshot global da instância; NÃO mede hit rate da busca",
+  "coleta_utc": "2026-11-25T02:25:04.136340+00:00",
+  "escopo": "contadores globais da instância Redis no instante da coleta",
   "ping": true,
   "keyspace_hits": 0,
-  "keyspace_misses": 18,
+  "keyspace_misses": 26,
   "chaves": 0
 }

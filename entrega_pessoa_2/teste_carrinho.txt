@@ -1,7 +1,5 @@
-Coleta UTC: 2026-11-25T02:12:59.510432+00:00
+Coleta UTC: 2026-11-25T02:25:03.917567+00:00
 Ambiente: Docker Compose de laboratório, dados sintéticos, sem mocks.
 
-{"perfil": "ESTUDANTE", "operacao": "ler carrinho vazio", "http": 200, "resposta": {"session_id": "parcial-sem-indice", "items": []}}
-{"perfil": "PROFESSOR", "operacao": "ler carrinho vazio", "http": 200, "resposta": {"session_id": "parcial-sem-indice", "items": []}}
-{"operacao": "adicionar", "http": 503, "resposta": {"detail": "Índice indisponível"}}
-{"estado": "BLOQUEADO", "limite": "Não se comprovou inclusão, persistência, isolamento com itens ou TTL."}
+{"perfil": "ESTUDANTE", "cenario": "leitura de carrinho vazio", "http": 200, "resposta": {"session_id": "evidencias-vazias-pessoa2", "items": []}}
+{"perfil": "PROFESSOR", "cenario": "leitura de carrinho vazio", "http": 200, "resposta": {"session_id": "evidencias-vazias-pessoa2", "items": []}}

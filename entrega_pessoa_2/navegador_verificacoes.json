@@ -16,7 +16,7 @@
       "role": "ESTUDANTE"
     },
     "login_http": 200,
-    "escopo": "somente autenticação e perfil; busca e carrinho não validados"
+    "escopo": "autenticação LDAP, identidade, perfil e controle de acesso"
   },
   {
     "rota": "/auth/me",
@@ -30,6 +30,6 @@
       "role": "PROFESSOR"
     },
     "login_http": 200,
-    "escopo": "somente autenticação e perfil; busca e carrinho não validados"
+    "escopo": "autenticação LDAP, identidade, perfil e controle de acesso"
   }
 ]

@@ -1,0 +1,13 @@
+{
+  "escopo": "rotas, autenticação, perfis, Redis e cenários de carrinho vazio",
+  "testes_unitarios_aprovados": 33,
+  "build_frontend": "aprovado",
+  "autenticacao_pessoas": "OpenLDAP real e identidade/perfil em /auth/me",
+  "controle_acesso": "401 sem login, 401 login inválido, 403 estudante em rota restrita",
+  "servicos_kerberos": [
+    "API -> Kafka SASL/GSSAPI",
+    "worker -> Kafka SASL/GSSAPI"
+  ],
+  "redis": "PING, snapshot global e leitura de carrinho vazio",
+  "exportacao": "carrinho vazio JSON/PDF: professor 200, estudante 403"
+}

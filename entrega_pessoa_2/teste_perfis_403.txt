@@ -1,7 +1,7 @@
-Coleta UTC: 2026-11-25T02:12:59.518209+00:00
+Coleta UTC: 2026-11-25T02:25:03.833779+00:00
 Ambiente: Docker Compose de laboratório, dados sintéticos, sem mocks.
 
-{"perfil": "SEM_LOGIN", "rota": "/analytics/courses", "http": 401, "resposta": {"detail": "Autenticação necessária"}}
-{"perfil": "ESTUDANTE", "rota": "/analytics/courses", "http": 403, "resposta": {"detail": "Acesso restrito a professores"}}
-{"perfil": "PROFESSOR", "rota": "/analytics/courses", "http": 503, "resposta": {"detail": "Índice de busca indisponível"}}
-{"limite": "403 do estudante comprovado; professor consultando índice e proteção de gabarito NÃO comprovados."}
+{"endpoint": "/auth/me", "http": 200, "identidade": {"username": "estudante", "role": "ESTUDANTE"}}
+{"endpoint": "/analytics/courses", "http": 403, "perfil": "ESTUDANTE", "resposta": {"detail": "Acesso restrito a professores"}}
+{"endpoint": "/auth/me", "http": 200, "identidade": {"username": "professor", "role": "PROFESSOR"}}
+{"sem_login_http": 401, "login_invalido_http": 401}
